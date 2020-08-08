@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -64,6 +65,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     // password reset email send success, update UI with the signed-in user's information
                     Log.d(TAG, "resetPasswordEmail:success");
                     notification("Password reset email has been sent! Please check your mailbox.");
+                    Intent intent = new Intent (ForgotPasswordActivity.this, SignInActivity.class);
+                    startActivity(intent);
 //                            firebaseDatabaseRecord(usernameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString());
 //                            FirebaseUser user = mAuth.getCurrentUser();
 //                            updateUI(user);

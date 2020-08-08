@@ -91,7 +91,7 @@ public class SignInActivity extends AppCompatActivity {
         newDeviceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent (SignInActivity.this, NewSetupActivity.class);
+                Intent intent = new Intent (SignInActivity.this, ScanQRActivity.class);
                 startActivity(intent);
                 emailField.setText(null);
                 passwordField.setText(null);
