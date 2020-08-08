@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "795392676502",
+    "firebase_url": "https://qrfacelocksystem.firebaseio.com",
+    "project_id": "qrfacelocksystem",
+    "storage_bucket": "qrfacelocksystem.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795392676502:android:d14702225c613dc35028b7",
+        "android_client_info": {
+          "package_name": "com.example.qrfacelocksystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "795392676502-daqua82qv0s4oinmng8t6cja643br0pk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.qrfacelocksystem",
+            "certificate_hash": "fc352d1f084df82f3db593298df8711842f39225"
+          }
+        },
+        {
+          "client_id": "795392676502-b8scrgrvtr601ttndhhokkab8nsm28c4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZdlO6gl03xCrVqIWg2zBYXm20_8JRo1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "795392676502-b8scrgrvtr601ttndhhokkab8nsm28c4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

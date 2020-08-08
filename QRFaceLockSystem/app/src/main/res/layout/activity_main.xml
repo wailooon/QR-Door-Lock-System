@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+<!--    <TextView-->
+<!--        android:id="@+id/doorLockLabel"-->
+<!--        android:layout_width="114dp"-->
+<!--        android:layout_height="23dp"-->
+<!--        android:text="Door Lock Code: "-->
+<!--        android:textColor="#777676"-->
+<!--        android:textSize="14sp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.185"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.393" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/passwordLabel"-->
+<!--        android:layout_width="145dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:text="Password: "-->
+<!--        android:textColor="#000000"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/nameLabel"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/nameLabel"-->
+<!--        app:layout_constraintVertical_bias="0.096" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/nameLabel"-->
+<!--        android:layout_width="145dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:text="Name: "-->
+<!--        android:textColor="#000000"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.06"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.499" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/setupLabel"-->
+<!--        android:layout_width="343dp"-->
+<!--        android:layout_height="48dp"-->
+<!--        android:text="SETUP NEW DOOR LOCK"-->
+<!--        android:textColor="#000000"-->
+<!--        android:textSize="30sp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.324" />-->
+
+<!--    <EditText-->
+<!--        android:id="@+id/nameTextField"-->
+<!--        android:layout_width="208dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Enter name"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:textSize="14sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/nameLabel"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.476"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/nameLabel"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/nameLabel" />-->
+
+<!--    <EditText-->
+<!--        android:id="@+id/passwordTextField"-->
+<!--        android:layout_width="208dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Enter password"-->
+<!--        android:inputType="textPassword"-->
+<!--        android:textSize="14sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/passwordLabel"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/passwordLabel"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/passwordLabel" />-->
+
+<!--    <EditText-->
+<!--        android:id="@+id/doorLockCodeField"-->
+<!--        android:layout_width="163dp"-->
+<!--        android:layout_height="23dp"-->
+<!--        android:layout_marginStart="24dp"-->
+<!--        android:ems="10"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:textSize="14sp"-->
+<!--        android:visibility="visible"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/doorLockLabel"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.393" />-->
+
+
+<!--    <com.facebook.login.widget.LoginButton-->
+<!--        android:id="@+id/login_button"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:layout_marginStart="109dp"-->
+<!--        android:layout_marginEnd="109dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.743" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
