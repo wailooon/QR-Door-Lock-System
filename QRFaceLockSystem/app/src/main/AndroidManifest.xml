@@ -2,12 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.qrfacelocksystem">
 
-    <uses-feature android:name="android.hardware.camera" />
-
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!-- Allows applications to open network sockets. -->
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,7 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ScanQRActivity"></activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".ScanQRActivity" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".SignInActivity">
             <intent-filter>
@@ -26,7 +24,10 @@
         </activity>
         <activity android:name=".NewSetupActivity" />
         <activity android:name=".MainActivity" />
-    </application>
+    </application> <!-- Allows applications to open network sockets. -->
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 

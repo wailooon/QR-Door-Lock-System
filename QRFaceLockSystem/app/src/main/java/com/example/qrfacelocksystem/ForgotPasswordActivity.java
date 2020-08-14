@@ -1,11 +1,14 @@
 package com.example.qrfacelocksystem;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.drm.DrmStore;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,14 +34,19 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private EditText emailField;
     private Button resetPwBtn;
 
+    private ActionBar actionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
         emailField = (EditText) findViewById(R.id.emailTextField);
+        emailField = (EditText) findViewById(R.id.emailTextField);
 
         resetPwBtn = (Button) findViewById(R.id.restPwButton);
+
+        setActionBar("Reset Password");
 
         resetPwBtn_Click();
     }
@@ -47,12 +55,27 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         resetPwBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firebaseResetPassword(emailField.getText().toString());
+
+                if(emailField.equals("")){
+                    firebaseResetPassword(emailField.getText().toString());
+                }else{
+                    notification("Please enter your email address!");
+                }
             }
         });
 
     }
 
+    private void setActionBar(String heading) {
+        actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorActionBar)));
+        actionBar.setTitle(heading);
+        actionBar.show();
+
+    }
 
     private void firebaseResetPassword(String email_address) {
 

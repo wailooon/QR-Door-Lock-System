@@ -1,16 +1,20 @@
 package com.example.qrfacelocksystem;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.StatusBarManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.ActionMenuView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -38,6 +42,8 @@ public class SignInActivity extends AppCompatActivity {
     private Button signInBtn, newDeviceBtn, forgotPwBtn;
     private CheckBox showPasswordCheckbox;
 
+    private ActionBar actionBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +61,15 @@ public class SignInActivity extends AppCompatActivity {
 
         showPasswordCheckbox = (CheckBox)findViewById(R.id.showPassCheckBox);
 
+        setActionBar("Sign In");
+
         signInBtn_Click();
         showPasswordCheckbox();
         newDevice_Click();
         forgotPw_Click();
+
+
+
     }
 
 
@@ -114,6 +125,18 @@ public class SignInActivity extends AppCompatActivity {
         });
 
     }
+
+    private void setActionBar(String heading) {
+        actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorActionBar)));
+        actionBar.setTitle(heading);
+        actionBar.show();
+
+    }
+
 
     private void firebaseSignIn(String email_address, String password_field) {
 

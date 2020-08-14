@@ -2,10 +2,12 @@ package com.example.qrfacelocksystem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -43,6 +45,7 @@ public class NewSetupActivity extends AppCompatActivity {
     private Button setupButton;
     private CheckBox showPasswordCheckbox;
 
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,7 @@ public class NewSetupActivity extends AppCompatActivity {
 
         doorLock_Code.setText(GenerateRandomString.randomString(8));
 
+        setActionBar("New Device Setup");
 
         showPasswordCheckbox();
         setupBtn_Click();
@@ -74,6 +78,17 @@ public class NewSetupActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
 //        FirebaseUser currentUser = mAuth.getCurrentUser();
 //        updateUI(currentUser);
+    }
+
+    private void setActionBar(String heading) {
+        actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorActionBar)));
+        actionBar.setTitle(heading);
+        actionBar.show();
+
     }
 
 
