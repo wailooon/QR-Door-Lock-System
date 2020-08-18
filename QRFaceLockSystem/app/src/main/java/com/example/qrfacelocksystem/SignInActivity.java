@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,6 +42,9 @@ public class SignInActivity extends AppCompatActivity {
     private EditText emailField, passwordField;
     private Button signInBtn, newDeviceBtn, forgotPwBtn;
     private CheckBox showPasswordCheckbox;
+    private ProgressBar progressBar;
+
+    private String email,password;
 
     private ActionBar actionBar;
 
@@ -50,6 +54,7 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
 
+        mAuth = FirebaseAuth.getInstance();
 
         emailField = (EditText) findViewById(R.id.emailTextField);
         passwordField = (EditText) findViewById(R.id.passwordTextField);
@@ -57,6 +62,9 @@ public class SignInActivity extends AppCompatActivity {
         signInBtn = (Button) findViewById(R.id.signInButton);
         newDeviceBtn = (Button) findViewById(R.id.newDeviceButton);
         forgotPwBtn = (Button) findViewById(R.id.forgotPwButton);
+        progressBar = (ProgressBar) findViewById(R.id.activity_sigin_progressBar);
+
+        progressBar.setVisibility(View.INVISIBLE);   //set invisibility
 
 
         showPasswordCheckbox = (CheckBox)findViewById(R.id.showPassCheckBox);
@@ -92,7 +100,63 @@ public class SignInActivity extends AppCompatActivity {
         signInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firebaseSignIn(emailField.getText().toString(),passwordField.getText().toString());
+
+                if (validateEmail() && validatePassword()) {
+                        progressBar.setVisibility(View.VISIBLE);
+
+                        mAuth.signInWithEmailAndPassword(emailField.getText().toString(),passwordField.getText().toString()).addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d(TAG, "signInUserWithEmail:success");
+                                    AlertDialog.Builder successAlert = new AlertDialog.Builder(SignInActivity.this);
+                                    successAlert.setTitle("Sign-in Success");
+                                    successAlert.setMessage("Done sign in");
+                                    successAlert.setPositiveButton("Done",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    Intent intent = new Intent(SignInActivity.this, HomeActivity.class);
+                                                    startActivity(intent);
+                                                    emailField.setText(null);
+                                                    passwordField.setText(null);
+                                                    emailField.requestFocus();
+                                                }
+                                            });
+                                    successAlert.show();
+//                                  firebaseDatabaseRecord(usernameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString());
+//                                  FirebaseUser user = mAuth.getCurrentUser();
+//                                  updateUI(user);
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w(TAG, "signInUserWithEmail:failure", task.getException());
+                                    AlertDialog.Builder failedAlert = new AlertDialog.Builder(SignInActivity.this);
+                                    failedAlert.setTitle("Sign-in Failed");
+                                    failedAlert.setMessage("Need new an account?");
+                                    failedAlert.setPositiveButton("Create new an account",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    Intent intent = new Intent(SignInActivity.this, NewSetupActivity.class);
+                                                    startActivity(intent);
+                                                    emailField.setText(null);
+                                                    passwordField.setText(null);
+                                                    emailField.requestFocus();
+                                                }
+                                            });
+                                    failedAlert.setNegativeButton("Try again",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    passwordField.setText(null);
+                                                    emailField.requestFocus();
+                                                }
+                                            });
+                                    failedAlert.show();
+//                                  updateUI(null);
+                                }
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+                }
             }
         });
 
@@ -138,52 +202,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-    private void firebaseSignIn(String email_address, String password_field) {
-
-        mAuth = FirebaseAuth.getInstance();
-
-        if (validateEmail() | validatePassword()) {
-            mAuth.signInWithEmailAndPassword(email_address,password_field).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInUserWithEmail:success");
-                        notification("Sign in successful!");
-//                            firebaseDatabaseRecord(usernameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString());
-//                            FirebaseUser user = mAuth.getCurrentUser();
-//                            updateUI(user);
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInUserWithEmail:failure", task.getException());
-                        AlertDialog.Builder alert1 = new AlertDialog.Builder(SignInActivity.this);
-                        alert1.setTitle("Sign in Failed");
-                        alert1.setMessage("Need new an account?");
-                        alert1.setPositiveButton("Create new an account",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        Intent intent = new Intent (SignInActivity.this, NewSetupActivity.class);
-                                        startActivity(intent);
-                                        emailField.setText(null);
-                                        passwordField.setText(null);
-                                        emailField.requestFocus();
-                                    }
-                                });
-                        alert1.setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-                        alert1.show();
-//                            updateUI(null);
-                    }
-                }
-            });
-        }
-
-    }
-
     private void notification(String message) {
         Toast.makeText(this, message,
                 Toast.LENGTH_SHORT).show();
@@ -191,12 +209,12 @@ public class SignInActivity extends AppCompatActivity {
 
     private boolean validateEmail(){
 
-        String emailInput = emailField.getText().toString().trim();
+        email = emailField.getText().toString().trim();
 
-        if(emailInput.isEmpty()){
-            emailField.setError("Field can't be empty!");
+        if(email.isEmpty()){
+            emailField.setError("Please enter your email address!");
             return false;
-        }else if(!Pattern.compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$").matcher(emailInput).matches()){
+        }else if(!Pattern.compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$").matcher(email).matches()){
             emailField.setError("Please enter a valid email address");
             return false;
         }else{
@@ -206,13 +224,13 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private boolean validatePassword(){
-        String passwordInput = passwordField.getText().toString().trim();
+        password = passwordField.getText().toString().trim();
 
-        if(passwordInput.isEmpty()){
-            passwordField.setError("Field can't be empty!");
+        if(password.isEmpty()){
+            passwordField.setError("Please enter your password!");
             return false;
-        }else if(!Pattern.compile("^.{8,16}$").matcher(passwordInput).matches()){
-            passwordField.setError("Password must between 8 to 16 character");
+        }else if(!Pattern.compile("^.{8,16}$").matcher(password).matches()){
+            passwordField.setError("Please enter a valid email address! Password must between 8 to 16 character");
             return false;
         }else{
             passwordField.setError(null);
