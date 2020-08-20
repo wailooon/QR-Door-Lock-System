@@ -82,10 +82,12 @@ public class NewSetupActivity extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);   //set invisibility
 
 
-        doorLock_Code.setText(GenerateRandomString.randomString(8));
+
+//        doorLock_Code.setText(GenerateRandomString.randomString(8));
 
         setActionBar("New Device Setup");
-
+        
+        getDoorCode();
         showPasswordCheckbox();
         setupBtn_Click();
 
@@ -109,6 +111,17 @@ public class NewSetupActivity extends AppCompatActivity {
         actionBar.setTitle(heading);
         actionBar.show();
 
+    }
+
+    private void getDoorCode(){
+        Intent doorCode = getIntent();
+        Bundle door_code = doorCode.getExtras();
+
+        if(door_code!=null)
+        {
+            String code =(String) door_code.get("DoorCode");
+            doorLock_Code.setText(code);
+        }
     }
 
 
@@ -322,22 +335,22 @@ public class NewSetupActivity extends AppCompatActivity {
         }
     }
 
-    public static class GenerateRandomString {
-
-        public static final String DATA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        public static Random RANDOM = new Random();
-
-        public static String randomString(int len) {
-            StringBuilder sb = new StringBuilder(len);
-
-            for (int i = 0; i < len; i++) {
-                sb.append(DATA.charAt(RANDOM.nextInt(DATA.length())));
-            }
-
-            return sb.toString();
-        }
-
-    }
+//    public static class GenerateRandomString {
+//
+//        public static final String DATA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+//        public static Random RANDOM = new Random();
+//
+//        public static String randomString(int len) {
+//            StringBuilder sb = new StringBuilder(len);
+//
+//            for (int i = 0; i < len; i++) {
+//                sb.append(DATA.charAt(RANDOM.nextInt(DATA.length())));
+//            }
+//
+//            return sb.toString();
+//        }
+//
+//    }
 
 //    database = FirebaseDatabase.getInstance();
 //    mDataRef = database.getReference("/Users Details/Door Lock ID/");

@@ -5,8 +5,8 @@
     <stroke
         android:dashGap="18dp"
         android:dashWidth="38dp"
-        android:width="1dp"
-        android:color="@android:color/holo_green_dark"/>
+        android:width="2dp"
+        android:color="@android:color/holo_red_light"/>
 
     <corners android:radius="8dp"/>
     <solid android:color="#66FEFEFE"/>
