@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -78,12 +79,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                 // password reset email send success, update UI with the signed-in user's information
                                 Log.d(TAG, "resetPasswordEmail:success");
                                 alertBox("Password reset email has been sent! Please check your mailbox.");
-                                Intent intent = new Intent (ForgotPasswordActivity.this, SignInActivity.class);
+                                Intent intent = new Intent(ForgotPasswordActivity.this, SignInActivity.class);
                                 startActivity(intent);
+                                finish();
 //                            firebaseDatabaseRecord(usernameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString());
 //                            FirebaseUser user = mAuth.getCurrentUser();
 //                            updateUI(user);
-                            }else {
+                            } else {
                                 // If password reset email send fails, display a message to the user.
                                 Log.w(TAG, "resetPasswordEmail:failure", task.getException());
                                 AlertDialog.Builder alert1 = new AlertDialog.Builder(ForgotPasswordActivity.this);
@@ -93,7 +95,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                                 emailFieldBox.setText("");
-                                                resetPwBtn_Click();
+                                                emailFieldBox.requestFocus();
+                                                return;
                                             }
                                         });
                                 alert1.show();
@@ -107,17 +110,17 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
     }
 
-    private boolean validateEmail(){
+    private boolean validateEmail() {
 
         email = emailFieldBox.getText().toString();
 
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             emailFieldBox.setError("Please enter your email address!");
             return false;
-        }else if(!Pattern.compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$").matcher(email).matches()){
+        } else if (!Pattern.compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$").matcher(email).matches()) {
             emailFieldBox.setError("Please enter a valid email address");
             return false;
-        }else{
+        } else {
             emailFieldBox.setError(null);
             return true;
         }
@@ -126,7 +129,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private void setActionBar(String heading) {
         actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorActionBar)));
         actionBar.setTitle(heading);
@@ -134,6 +137,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
 
     private void alertBox(String message) {
         Toast.makeText(ForgotPasswordActivity.this, message,

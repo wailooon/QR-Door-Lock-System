@@ -9,4 +9,6 @@
 
     <color name="colorButtonBackground">#bfb39b</color>
     <color name="colorButtonFont">#000000</color>
+
+    <color name="colorProgressBar">#F1D391</color>
 </resources>
