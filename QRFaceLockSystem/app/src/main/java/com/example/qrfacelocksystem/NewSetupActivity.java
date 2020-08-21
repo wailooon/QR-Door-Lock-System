@@ -86,7 +86,7 @@ public class NewSetupActivity extends AppCompatActivity {
 //        doorLock_Code.setText(GenerateRandomString.randomString(8));
 
         setActionBar("New Device Setup");
-        
+
         getDoorCode();
         showPasswordCheckbox();
         setupBtn_Click();
@@ -105,7 +105,7 @@ public class NewSetupActivity extends AppCompatActivity {
     private void setActionBar(String heading) {
         actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorActionBar)));
         actionBar.setTitle(heading);

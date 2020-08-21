@@ -42,7 +42,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewSetupActivity"></activity>
+        <activity android:name=".NewSetupActivity"
+            android:parentActivityName=".HomeActivity"></activity>
         <activity android:name=".MainActivity" />
 
         <meta-data

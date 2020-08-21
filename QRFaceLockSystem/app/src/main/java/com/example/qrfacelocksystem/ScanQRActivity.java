@@ -53,54 +53,6 @@ public class ScanQRActivity extends AppCompatActivity {
 
         setupCamera();
 
-//        FirebaseVisionImage image =
-//                FirebaseVisionImage.fromMediaImage(mediaImage, ImageFormat.YUV_420_888);
-
-
-//        Task<List<FirebaseVisionBarcode>> task1 = detector.detectInImage(image)
-//                .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionBarcode>>() {
-//                    @Override
-//                    public void onSuccess(List<FirebaseVisionBarcode> firebaseVisionBarcodes) {
-//
-//                    }
-//                }
-
-//        // To initialise the detector
-//
-//        FirebaseVisionBarcodeDetectorOptions options =
-//                new FirebaseVisionBarcodeDetectorOptions.Builder()
-//                        .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_QR_CODE)
-//                        .build();
-//
-//        FirebaseVisionBarcodeDetector detector = FirebaseVision.getInstance()
-//                .getVisionBarcodeDetector(options);
-//
-//
-//        // To connect the camera resource with the detector
-//
-//        mCameraSource = new CameraSource(this, barcodeOverlay);
-//        mCameraSource.setFacing(CameraSource.CAMERA_FACING_BACK);
-//
-//        barcodeScanningProcessor = new BarcodeScanningProcessor(detector);
-//        barcodeScanningProcessor.setBarcodeResultListener(getBarcodeResultListener());
-//
-//        mCameraSource.setMachineLearningFrameProcessor(barcodeScanningProcessor);
-//
-//        // // To create the FirebaseVisionImage
-//
-//
-//        FirebaseVisionImageMetadata metadata =
-//                new FirebaseVisionImageMetadata.Builder()
-//                        .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
-//                        .setWidth(frameMetadata.getWidth())
-//                        .setHeight(frameMetadata.getHeight())
-//                        .setRotation(frameMetadata.getRotation())
-//                        .build();
-//
-//        Bitmap bitmap = BitmapUtils.getBitmap(data, frameMetadata);
-//
-//        FirebaseVisionImage firebaseVisionImage=FirebaseVisionImage.fromByteBuffer(data, metadata);
-
     }
 
 
@@ -206,7 +158,7 @@ public class ScanQRActivity extends AppCompatActivity {
     private void createDoor(String rawValue){
         Intent intent = new Intent(ScanQRActivity.this, NewSetupActivity.class);
         intent.putExtra("DoorCode",rawValue);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();
     }
