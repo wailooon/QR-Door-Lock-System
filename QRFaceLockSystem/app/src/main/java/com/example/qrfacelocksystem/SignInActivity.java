@@ -142,7 +142,11 @@ public class SignInActivity extends AppCompatActivity {
         signInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signInFirebaseAccount();
+                if(users != null){
+                    mAuth.signOut();
+                }else{
+                    signInFirebaseAccount();
+                }
             }
         });
 
