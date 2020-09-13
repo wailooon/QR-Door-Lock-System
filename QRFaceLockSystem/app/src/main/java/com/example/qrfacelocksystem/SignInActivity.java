@@ -4,13 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.app.Activity;
 import android.app.StatusBarManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.BoringLayout;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -30,9 +33,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class SignInActivity extends AppCompatActivity {
@@ -42,6 +48,9 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseUser users;
     private FirebaseDatabase database;
     private DatabaseReference mDataRef;
+
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
 
     private EditText emailField, passwordField;
     private Button signInBtn, newDeviceBtn, forgotPwBtn;
@@ -76,6 +85,7 @@ public class SignInActivity extends AppCompatActivity {
         showPasswordCheckbox = (CheckBox) findViewById(R.id.showPassCheckBox);
 
         setActionBar("Sign In");
+
 
         checkIsLogin();
 
@@ -122,6 +132,7 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+
     private void showPasswordCheckbox() {
         showPasswordCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -152,6 +163,8 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
+
+
     private void signInFirebaseAccount() {
         if (users == null) {
             if (validateEmail() && validatePassword()) {
@@ -165,8 +178,6 @@ public class SignInActivity extends AppCompatActivity {
                             notification("Successfully sign in!");
                             emailField.setText(null);
                             passwordField.setText(null);
-
-//                                    firebaseDatabaseRecord(usernameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString());
 //                                  FirebaseUser user = mAuth.getCurrentUser();
 //                                  updateUI(user);
 
@@ -291,6 +302,29 @@ public class SignInActivity extends AppCompatActivity {
         } else {
             passwordField.setError(null);
             return true;
+        }
+    }
+
+    public class UserDetails {
+
+        public String username;
+        public String uid;
+        public String email;
+        public String password;
+        public String doorId;
+        public boolean lock_Status = false;
+
+        public UserDetails() {
+            // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        }
+
+        public UserDetails(String uid, String door_id, String username, String email, String password, Boolean lockStatus) {
+            this.uid = uid;
+            this.doorId = door_id;
+            this.username = username;
+            this.email = email;
+            this.password = password;
+            this.lock_Status = lockStatus;
         }
     }
 

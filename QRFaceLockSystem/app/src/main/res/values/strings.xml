@@ -11,12 +11,20 @@
     <string name="login_failed">"Login failed"</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
+    <!-- Add New Device Preferences -->
+    <string name="add_new_header">New Device</string>
+    <string name="add_new_btn_label">Add New Device</string>
+
+    <!-- Account Preferences -->
+    <string name="account_setting_header">Account Settings</string>
+    <string name="user_name">User Name</string>
+    <string name="sign_out_btn_label">Sign out</string>
+
     <!-- Preference Titles -->
-    <string name="account_header">Account Settings</string>
+
     <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="user_name">User Name</string>
     <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
@@ -25,6 +33,13 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
 
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
     <!--    <string name="facebook_app_id">938901216628417</string>-->

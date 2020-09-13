@@ -2,10 +2,13 @@ package com.example.qrfacelocksystem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -13,6 +16,13 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.vision.CameraSource;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
@@ -31,14 +41,27 @@ import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.frame.Frame;
 import com.otaliastudios.cameraview.frame.FrameProcessor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScanQRActivity extends AppCompatActivity {
+    private FirebaseDatabase database;
+    private DatabaseReference mDataRef;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser users;
+
+    private ArrayList<String> _usersDetails; // Initialize all this stuff
+
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
 
     CameraView cameraView;
     boolean isDetected = true;
+    boolean isSame;
     private ActionBar actionBar;
     private CameraSource.Builder mCameraSource;
+    private String door_lock_shared, doorIdFirebase;
 
     FirebaseVisionBarcodeDetector detector;
     FirebaseVisionBarcodeDetectorOptions options;
@@ -49,9 +72,16 @@ public class ScanQRActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_q_r);
 
+        mAuth = FirebaseAuth.getInstance();
+        users = mAuth.getCurrentUser();
+
         setActionBar("Scan QR Code");
 
         setupCamera();
+
+
+
+
 
     }
 
@@ -139,14 +169,114 @@ public class ScanQRActivity extends AppCompatActivity {
         if(firebaseVisionBarcodes.size() > 0)
         {
             isDetected = true;
-            for (FirebaseVisionBarcode item: firebaseVisionBarcodes)
+            for (final FirebaseVisionBarcode item: firebaseVisionBarcodes)
             {
                 int value_type = item.getValueType();
                 switch(value_type)
                 {
                     case FirebaseVisionBarcode.TYPE_TEXT:
                     {
-                        createDoor(item.getRawValue());
+                        if(users == null){
+                            mDataRef = FirebaseDatabase.getInstance().getReference("Users Details");
+
+                            mDataRef.orderByChild("doorId").equalTo(item.getRawValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.exists()){
+                                        notification("Please try other QR code, because this QR code has been used!");
+                                        Intent intent = new Intent(ScanQRActivity.this, SignInActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }else{
+                                        createDoor(item.getRawValue().toString());
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
+                        }else{
+                            mDataRef = FirebaseDatabase.getInstance().getReference("/Users Details/" + users.getUid());
+
+                            mDataRef.orderByChild("doorId").equalTo(item.getRawValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        notification("Please try other QR code, because this QR code has been used!");
+                                        Intent intent = new Intent(ScanQRActivity.this, HomeActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                    } else {
+                                        Intent intent = new Intent(ScanQRActivity.this, AddNewDeviceActivity.class);
+                                        intent.putExtra("NewDoorCode", item.getRawValue().toString());
+                                        startActivity(intent);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+                        }
+
+//                        mDataRef = FirebaseDatabase.getInstance().getReference("Users Details");
+//
+//                        mDataRef.orderByChild("doorId").equalTo(item.getRawValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                if(users == null){
+//                                    if(dataSnapshot.exists()){
+//                                        notification("Please try other QR code, because this QR code has been used!");
+//                                        Intent intent = new Intent(ScanQRActivity.this, SignInActivity.class);
+//                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                        startActivity(intent);
+//                                        finish();
+//                                    }else{
+//                                        createDoor(item.getRawValue().toString());
+//                                    }
+//
+//                                }else {
+//                                    mDataRef = FirebaseDatabase.getInstance().getReference("/Users Details/" + users.getUid());
+//
+//                                    mDataRef.orderByChild("doorId").equalTo(item.getRawValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                        @Override
+//                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                            if (dataSnapshot.exists()) {
+//                                                notification("Please try other QR code, because this QR code has been used!");
+//                                                Intent intent = new Intent(ScanQRActivity.this, HomeActivity.class);
+//                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                                startActivity(intent);
+//                                            } else {
+//                                                Intent intent = new Intent(ScanQRActivity.this, AddNewDeviceActivity.class);
+//                                                intent.putExtra("NewDoorCode", item.getRawValue().toString());
+//                                                startActivity(intent);
+//                                            }
+//                                        }
+//
+//                                        @Override
+//                                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                        }
+//                                    });
+//
+//                                }
+//
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError error) {
+//
+//                            }
+//                        });
+
                     }
                     break;
                     default:
@@ -155,12 +285,15 @@ public class ScanQRActivity extends AppCompatActivity {
         }
     }
 
+    private int getUserDetailsPos(String userDetails) {
+        return _usersDetails.indexOf(userDetails);
+    }
+
     private void createDoor(String rawValue){
-        Intent intent = new Intent(ScanQRActivity.this, NewSetupActivity.class);
-        intent.putExtra("DoorCode",rawValue);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        finish();
+            Intent intent = new Intent(ScanQRActivity.this, NewSetupActivity.class);
+            intent.putExtra("DoorCode",rawValue);
+            startActivity(intent);
+            finish();
     }
 
     private FirebaseVisionImage getVisionImageFromFrame(Frame frame){

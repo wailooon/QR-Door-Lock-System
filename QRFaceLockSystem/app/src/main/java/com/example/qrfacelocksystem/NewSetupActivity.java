@@ -34,7 +34,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Random;
 import java.util.regex.Pattern;
 
 
@@ -47,7 +46,7 @@ public class NewSetupActivity extends AppCompatActivity {
     private DatabaseReference mDataRef;
 
     private TextView doorLock_Code;
-    private EditText usernameField, emailField, passwordField;
+    private EditText usernameField, emailField, passwordField, deviceNameField;
     private Button setupButton;
     private CheckBox showPasswordCheckbox;
     private ProgressBar progressBar;
@@ -55,6 +54,7 @@ public class NewSetupActivity extends AppCompatActivity {
     private ActionBar actionBar;
 
     private String confirmation_message;
+    private Boolean lock_Status = false;
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
 
@@ -65,6 +65,8 @@ public class NewSetupActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        users = mAuth.getCurrentUser();
 
 
         doorLock_Code = (TextView) findViewById(R.id.door_code);
@@ -72,8 +74,9 @@ public class NewSetupActivity extends AppCompatActivity {
         usernameField = (EditText) findViewById(R.id.nameTextField);
         emailField = (EditText) findViewById(R.id.emailTextField);
         passwordField = (EditText) findViewById(R.id.passwordTextField);
+        deviceNameField = (EditText) findViewById(R.id.deviceNameTextField);
 
-        setupButton = (Button) findViewById(R.id.setupButton);
+        setupButton = (Button) findViewById(R.id.addNewButton);
 
         showPasswordCheckbox = (CheckBox) findViewById(R.id.showPassCheckBox);
 
@@ -125,14 +128,14 @@ public class NewSetupActivity extends AppCompatActivity {
     }
 
 
-    private void firebaseDatabaseRecord(String user_name, String email_address, String password_field) {
+    private void firebaseDatabaseRecord(String device_name, String door_id, String user_name, String email_address, String password_field, Boolean lock_status) {
+        UserDetails newUser = new UserDetails(users.getUid(), user_name, email_address, password_field, door_id, device_name, lock_status);
 
-
-        UserDetails newUser = new UserDetails(doorLock_Code.getText().toString(), user_name, email_address, password_field);
-
-        database = FirebaseDatabase.getInstance();
         mDataRef = database.getReference("/Users Details");
-        mDataRef.child(doorLock_Code.getText().toString()).setValue(newUser, new completionListener());
+        mDataRef.child(users.getUid()).child(door_id).setValue(newUser);
+
+//        mDataRef = database.getReference("/Users Details/" + users.getUid() + "/" + "Devices");
+//        mDataRef.child(doorLock_Code.getText().toString()).setValue(newDevice);
     }
 
 
@@ -161,22 +164,31 @@ public class NewSetupActivity extends AppCompatActivity {
                                                     users.sendEmailVerification().addOnCompleteListener(NewSetupActivity.this, new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
+                                                            firebaseDatabaseRecord(deviceNameField.getText().toString(), doorLock_Code.getText().toString(), usernameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString(), lock_Status);
+
                                                             confirmation_message = "A confirmation email has been sent to " + emailField.getText().toString().trim() + ". Please check your mailbox and activate your account.";
                                                             sharedPref = PreferenceManager.getDefaultSharedPreferences(NewSetupActivity.this);
                                                             editor = sharedPref.edit();
                                                             editor.putString("ConfirmationMessage", confirmation_message);
-                                                            editor.apply();
-//                                                                    firebaseDatabaseRecord(usernameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString());
-//                                                                  updateUI(user);
 
+                                                            editor.putString("username", usernameField.getText().toString());
+                                                            editor.putString("password", passwordField.getText().toString());
+                                                            editor.putString("device_name", deviceNameField.getText().toString());
+                                                            editor.putString("door_code", doorLock_Code.getText().toString());
+
+                                                            editor.putString("email", emailField.getText().toString());
+                                                            editor.putBoolean("lock_status", lock_Status);
+                                                            editor.apply();
+
+
+//                                                             updateUI(user);
                                                             Intent intent = new Intent(NewSetupActivity.this, ConfimationEmailActivity.class);
                                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                            startActivity(intent);
-                                                            finish();
-
                                                             usernameField.setText("");
                                                             emailField.setText("");
                                                             passwordField.setText("");
+                                                            startActivity(intent);
+                                                            finish();
                                                         }
                                                     });
 
@@ -319,21 +331,46 @@ public class NewSetupActivity extends AppCompatActivity {
     public class UserDetails {
 
         public String username;
+        public String uid;
         public String email;
         public String password;
+
+        public String deviceName;
         public String doorId;
+        public boolean lock_Status;
 
         public UserDetails() {
             // Default constructor required for calls to DataSnapshot.getValue(User.class)
         }
 
-        public UserDetails(String door_id, String username, String email, String password) {
-            this.doorId = door_id;
+        public UserDetails(String uid, String username, String email, String password, String door_id, String device_name, Boolean lockStatus) {
+            this.uid = uid;
             this.username = username;
             this.email = email;
             this.password = password;
+
+            this.doorId = door_id;
+            this.deviceName = device_name;
+            this.lock_Status = lockStatus;
         }
     }
+
+//    public class DeviceDetails {
+//
+//        public String deviceName;
+//        public String doorId;
+//        public boolean lock_Status;
+//
+//        public DeviceDetails() {
+//            // Default constructor required for calls to DataSnapshot.getValue(User.class)
+//        }
+//
+//        public DeviceDetails(String door_id, String device_name, Boolean lockStatus) {
+//            this.doorId = door_id;
+//            this.deviceName = device_name;
+//            this.lock_Status = lockStatus;
+//        }
+//    }
 
 //    public static class GenerateRandomString {
 //
