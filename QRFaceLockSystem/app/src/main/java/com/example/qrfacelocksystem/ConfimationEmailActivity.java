@@ -55,7 +55,6 @@ public class ConfimationEmailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 sharedPref = getSharedPreferences("ConfirmationMessage", MODE_PRIVATE);
                 sharedPref.edit().remove("ConfirmationMessage").commit();
-                mAuth.signOut();
 
                 Intent intent = new Intent(ConfimationEmailActivity.this, SignInActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -129,10 +129,17 @@ public class NewSetupActivity extends AppCompatActivity {
 
 
     private void firebaseDatabaseRecord(String device_name, String door_id, String user_name, String email_address, String password_field, Boolean lock_status) {
-        UserDetails newUser = new UserDetails(users.getUid(), user_name, email_address, password_field, door_id, device_name, lock_status);
+        UserDetails newUser = new UserDetails(users.getUid(), user_name, email_address, password_field);
+        DeviceDetails newDevice = new DeviceDetails(door_id,device_name,lock_status);
 
         mDataRef = database.getReference("/Users Details");
-        mDataRef.child(users.getUid()).child(door_id).setValue(newUser);
+        mDataRef.child(users.getUid()).setValue(newUser);
+
+        mDataRef = database.getReference("/Users Details");
+        mDataRef.child(users.getUid()).child("Devices").child(device_name).setValue(newDevice);
+
+        mDataRef = database.getReference("/IsUsedQRCode/");
+        mDataRef.child(door_id).child("doorId").setValue(door_id);
 
 //        mDataRef = database.getReference("/Users Details/" + users.getUid() + "/" + "Devices");
 //        mDataRef.child(doorLock_Code.getText().toString()).setValue(newDevice);
@@ -187,6 +194,7 @@ public class NewSetupActivity extends AppCompatActivity {
                                                             usernameField.setText("");
                                                             emailField.setText("");
                                                             passwordField.setText("");
+                                                            mAuth.signOut();
                                                             startActivity(intent);
                                                             finish();
                                                         }
@@ -343,34 +351,30 @@ public class NewSetupActivity extends AppCompatActivity {
             // Default constructor required for calls to DataSnapshot.getValue(User.class)
         }
 
-        public UserDetails(String uid, String username, String email, String password, String door_id, String device_name, Boolean lockStatus) {
+        public UserDetails(String uid, String username, String email, String password) {
             this.uid = uid;
             this.username = username;
             this.email = email;
             this.password = password;
+        }
+    }
+
+    public class DeviceDetails {
+        public String deviceName;
+        public String doorId;
+        public boolean lock_Status;
+
+        public DeviceDetails() {
+            // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        }
+
+        public DeviceDetails(String door_id, String device_name, Boolean lockStatus) {
 
             this.doorId = door_id;
             this.deviceName = device_name;
             this.lock_Status = lockStatus;
         }
     }
-
-//    public class DeviceDetails {
-//
-//        public String deviceName;
-//        public String doorId;
-//        public boolean lock_Status;
-//
-//        public DeviceDetails() {
-//            // Default constructor required for calls to DataSnapshot.getValue(User.class)
-//        }
-//
-//        public DeviceDetails(String door_id, String device_name, Boolean lockStatus) {
-//            this.doorId = door_id;
-//            this.deviceName = device_name;
-//            this.lock_Status = lockStatus;
-//        }
-//    }
 
 //    public static class GenerateRandomString {
 //

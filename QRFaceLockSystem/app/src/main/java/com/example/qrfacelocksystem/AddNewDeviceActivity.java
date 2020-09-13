@@ -1,5 +1,6 @@
 package com.example.qrfacelocksystem;
 
+import android.bluetooth.BluetoothClass;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -128,11 +129,14 @@ public class AddNewDeviceActivity extends AppCompatActivity {
     }
 
 
-    private void firebaseDatabaseRecord(String device_name, String door_id, String user_name, String email_address, String password_field, Boolean lock_status) {
-        UserDetails newUser = new UserDetails(users.getUid(), device_name, door_id, user_name, email_address, password_field,lock_status);
+    private void firebaseDatabaseRecord(String device_name, String door_id, Boolean lock_status) {
+        DeviceDetails newDevice = new DeviceDetails(door_id, device_name,lock_status);
 
-        mDataRef = database.getReference("/Users Details/"+ users.getUid());
-        mDataRef.child(door_id).setValue(newUser);
+        mDataRef = database.getReference("/Users Details/");
+        mDataRef.child(users.getUid()).child("Devices").child(device_name).setValue(newDevice);
+
+        mDataRef = database.getReference("/IsUsedQRCode/");
+        mDataRef.child(door_id).child("doorId").setValue(door_id);
     }
 
 
@@ -142,7 +146,7 @@ public class AddNewDeviceActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(!users.equals(null)){
                     if(!deviceNameField.getText().equals(null)) {
-                        firebaseDatabaseRecord(deviceNameField.getText().toString(), doorLock_Code.getText().toString(), username_shared, email_shared, password_shared, lock_Status);
+                        firebaseDatabaseRecord(deviceNameField.getText().toString(), doorLock_Code.getText().toString(), lock_Status);
                         notification("Successful add new door lock device!");
                         Intent intent = new Intent(AddNewDeviceActivity.this, HomeActivity.class);
                         startActivity(intent);
@@ -278,6 +282,23 @@ public class AddNewDeviceActivity extends AppCompatActivity {
             this.username = username;
             this.email = email;
             this.password = password;
+            this.lock_Status = lockStatus;
+        }
+    }
+
+    public class DeviceDetails {
+        public String deviceName;
+        public String doorId;
+        public boolean lock_Status;
+
+        public DeviceDetails() {
+            // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        }
+
+        public DeviceDetails(String door_id, String device_name, Boolean lockStatus) {
+
+            this.doorId = door_id;
+            this.deviceName = device_name;
             this.lock_Status = lockStatus;
         }
     }

@@ -177,9 +177,9 @@ public class ScanQRActivity extends AppCompatActivity {
                     case FirebaseVisionBarcode.TYPE_TEXT:
                     {
                         if(users == null){
-                            mDataRef = FirebaseDatabase.getInstance().getReference("Users Details");
+                            mDataRef = FirebaseDatabase.getInstance().getReference("/IsUsedQRCode");
 
-                            mDataRef.orderByChild("doorId").equalTo(item.getRawValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            mDataRef.orderByChild("doorId").equalTo(item.getRawValue()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if(dataSnapshot.exists()){
@@ -202,7 +202,7 @@ public class ScanQRActivity extends AppCompatActivity {
 
 
                         }else{
-                            mDataRef = FirebaseDatabase.getInstance().getReference("/Users Details/" + users.getUid());
+                            mDataRef = FirebaseDatabase.getInstance().getReference("/IsUsedQRCode");
 
                             mDataRef.orderByChild("doorId").equalTo(item.getRawValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override

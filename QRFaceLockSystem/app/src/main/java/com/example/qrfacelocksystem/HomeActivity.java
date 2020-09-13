@@ -97,15 +97,17 @@ public class HomeActivity extends AppCompatActivity {
 
 //        retrieveCurrentData_Firebase();
 
-
-
+        selectedItem();
 
         retrieveAllDoor_Firebase();
 
-        selectedItem();
 
         lockBtn_Click();
         unLockBtn_Click();
+
+
+
+
 
 
 
@@ -162,46 +164,22 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void selectedItem() {
-//        spinnerDataList.clear();
-//        retrieveAllDoor_Firebase();
-//        adpater.notifyDataSetChanged();
+
+
         choose_Door.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-//                String selected_item = choose_Door.getSelectedItemPosition();
-//                sharedPref = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
-//                editor = sharedPref.edit();
-//                editor.putString("spinner_item", selected_item);
-//                editor.commit();
-//
-//                sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                int spinnerValue = sharedPref.getInt("spinner_item",-1);
-//                if(spinnerValue != -1) {
-//                    // set the value of the spinner
-//                    choose_Door.setSelection(spinnerValue,true);
-//
-//                }
 
-                String item = choose_Door.getItemAtPosition(position).toString();
+                SelectedPositionItem newSelected = new SelectedPositionItem();
+                newSelected.setSelected(position);
+
+                String item = choose_Door.getItemAtPosition(newSelected.getSelected()).toString();
+
 
                 if(adapterView.getItemAtPosition(position).equals(item)){
                     chooseCurrentData_Firebase(item);
                 }
-
-
-
-
-//                chooseCurrentData_Firebase(choose_Door.getSelectedItem().toString());
-
-//                if(adapterView.getItemAtPosition(position).equals(currentDoorId)){
-//
-//                    chooseCurrentData_Firebase(choose_Door.getSelectedItem().toString());
-//
-//                }
-
-                retrieveAllDoor_Firebase();
-
 
 
 
@@ -214,7 +192,6 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        spinnerDataList.clear();
 
     }
 
@@ -238,44 +215,90 @@ public class HomeActivity extends AppCompatActivity {
 //        });
 //    }
 
+    private class SelectedPositionItem {
+
+        private int spinnerValue;
+
+        private int getSelected() {
+            sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            int spinnerValue = sharedPref.getInt("spinner_item", -1);
+            if (spinnerValue != -1) {
+                // set the value of the spinner
+                choose_Door.setSelection(spinnerValue, true);
+
+            }
+            return spinnerValue;
+        }
+
+        private void setSelected(int spinner_value) {
+            sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            editor = sharedPref.edit();
+            editor.putInt("spinner_item", spinner_value);
+            editor.apply();
+            this.spinnerValue = spinner_value;
+        }
+
+    }
+
+
+
     private void chooseCurrentData_Firebase(String device) {
 //        load_data_from_setup();
-        spinnerDataList.clear();
 
-        mDataRef = database.getReference("/Users Details/"+ users.getUid());
+        mDataRef = database.getReference("/Users Details/"+ users.getUid() + "/Devices");
 
-        mDataRef.orderByChild("doorId").equalTo(device).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDataRef.orderByChild("deviceName").equalTo(device).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot data: dataSnapshot.getChildren()){
-                    setDBSharedPref(data.child("deviceName").getValue().toString(), data.child("username").getValue().toString(), data.child("email").getValue().toString(), data.child("uid").getValue().toString(), (Boolean) data.child("lock_Status").getValue(), data.child("doorId").getValue().toString());
+                    setDeviceDBSharedPref(data.child("deviceName").getValue().toString(),(Boolean) data.child("lock_Status").getValue(),data.child("doorId").getValue().toString());
+//                    setDBSharedPref(data.child("deviceName").getValue().toString(), data.child("username").getValue().toString(), data.child("email").getValue().toString(), data.child("uid").getValue().toString(), (Boolean) data.child("lock_Status").getValue(), data.child("doorId").getValue().toString());
                     load_data();
-                    update_UI();
 
 
                 }
-//                retrieveAllDoor_Firebase();
+                update_UI();
+
 
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-//        retrieveAllDoor_Firebase();
 
     }
 
     private void retrieveAllDoor_Firebase() {
 
-        mDataRef = database.getReference("Users Details/" + users.getUid());
+        mDataRef = database.getReference("Users Details/" + users.getUid() + "/Devices");
 
-        listener = mDataRef.addValueEventListener(new ValueEventListener() {
+        listener = mDataRef.orderByChild("deviceName").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot item : snapshot.getChildren()){
-                    spinnerDataList.add(item.getKey().toString());
+                if(spinnerDataList.size() <= 2){
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        spinnerDataList.add(item.child("deviceName").getValue().toString());
+                    }
+                    adpater.notifyDataSetChanged();
                 }
-                adpater.notifyDataSetChanged(); //continues tomorran%%%%%%%%%%%%%
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void retrieveUser_Firebase() {
+
+        mDataRef = database.getReference("Users Details/" + users.getUid());
+
+        mDataRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    setUsersDBSharedPref(snapshot.child("username").getValue().toString(), snapshot.child("email").getValue().toString(), snapshot.child("uid").getValue().toString());
             }
 
             @Override
@@ -286,13 +309,20 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    private void setDBSharedPref(String device_name, String username, String email, String uid, Boolean lockStatus, String doorLock) {
+    private void setUsersDBSharedPref(String username, String email, String uid) {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPref.edit();
-        editor.putString("device_name_db",device_name);
         editor.putString("username_db",username);
         editor.putString("email_db",email);
         editor.putString("uid_db",uid);
+        editor.apply();
+
+    }
+
+    private void setDeviceDBSharedPref(String device_name, Boolean lockStatus, String doorLock) {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sharedPref.edit();
+        editor.putString("device_name_db",device_name);
         editor.putBoolean("lockStatus_db",lockStatus);
         editor.putString("doorCode_db",doorLock);
         editor.apply();
@@ -351,9 +381,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void update_UI(){
-//        spinnerDataList.clear();
-//        retrieveAllDoor_Firebase();
-        adpater.notifyDataSetChanged();
 
         Handler handler = new Handler();
         handler.post(new Runnable() {
@@ -362,13 +389,23 @@ public class HomeActivity extends AppCompatActivity {
                 if(lock_status_db){
                     doorResultLabel.setTextColor(Color.GREEN);
                     doorResultLabel.setText("Unlock");
+                    unlockBtn.setEnabled(false);
+                    unlockBtn.setBackgroundColor(Color.LTGRAY);
+                    lockBtn.setEnabled(true);
+                    lockBtn.setBackgroundColor(Color.WHITE);
                 }else{
                     doorResultLabel.setTextColor(Color.RED);
                     doorResultLabel.setText("Lock");
+                    lockBtn.setEnabled(false);
+                    lockBtn.setBackgroundColor(Color.LTGRAY);
+                    unlockBtn.setEnabled(true);
+                    unlockBtn.setBackgroundColor(Color.WHITE);
+
                 }
             }
         });
 
+        load_data();
 
         welcomeLabel.setText("Welcome Back ! " + username_db);
         doorCodeLabel.setText(door_lock_db);
@@ -376,20 +413,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void lockBtn_Click(){
-//        spinnerDataList.clear();
-//        retrieveAllDoor_Firebase();
-        adpater.notifyDataSetChanged();
 
         lockBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                int selected_item = choose_Door.getSelectedItemPosition();
-//                sharedPref = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
-//                editor = sharedPref.edit();
-//                editor.putInt("spinner_item", selected_item);
-//                editor.commit();
-//                spinnerDataList.clear();
-//                retrieveAllDoor_Firebase();
 
                 if (users.isEmailVerified()) {
 //                    sharedPref = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
@@ -400,21 +427,21 @@ public class HomeActivity extends AppCompatActivity {
                     lockAlert.setPositiveButton("Yes",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-//                                    spinnerDataList.clear();
-//                                    retrieveAllDoor_Firebase();
-                                    adpater.notifyDataSetChanged();
+
+                                    if(spinnerDataList != null){
+                                        spinnerDataList.clear();
+                                        adpater.notifyDataSetChanged();
+                                    }
+
                                     mDataRef = database.getReference("/Users Details");
-                                    mDataRef.child(users.getUid()).child(door_lock_db).child("lock_Status").setValue((boolean)false);
-                                    notification("Door is lock");
+                                    mDataRef.child(users.getUid()).child("Devices").child(device_name_db).child("lock_Status").setValue((boolean)false);
+                                    notification(device_name_db + " is lock");
                                     doorResultLabel.setTextColor(Color.RED);
                                     doorResultLabel.setText("Lock");
-//                                    if(spinnerDataList.size() > 2){
-//                                        spinnerDataList.clear();
-//                                    }
-//                                    sharedPref = getSharedPreferences("Position", MODE_PRIVATE);
-//                                    sharedPref.edit().remove("spinner_item").commit();
-//                                    retrieveAllDoor_Firebase();
-//                                    adpater.notifyDataSetChanged();
+
+
+                                    unlockBtn.setEnabled(true);
+                                    unlockBtn.setBackgroundColor(Color.WHITE);
 
 //                                    Intent reload = new Intent(HomeActivity.this, HomeActivity.class);
 //                                    reload.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -433,30 +460,14 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-        spinnerDataList.clear();
-        retrieveAllDoor_Firebase();
-        adpater.notifyDataSetChanged();
     }
+
     private void unLockBtn_Click(){
-        spinnerDataList.clear();
-//        retrieveAllDoor_Firebase();
-        adpater.notifyDataSetChanged();
 
         unlockBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mAuth.getInstance().signOut();
-//                Intent intent = new Intent(HomeActivity.this, SignInActivity.class);
-//                startActivity(intent);
-//                finish();
-//                getSharedPreferences("FILE_NAME", 0 /*FILE_MODE*/)
-//                        .edit()
-//                        .putString("password", "new value")
-//                        .apply();
-//                sharedPref = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
-//                sharedPref.edit().putBoolean("lockStatus_db", false).apply();
-//                spinnerDataList.clear();
-//                retrieveAllDoor_Firebase();
+
                 if (users.isEmailVerified()) {
                     AlertDialog.Builder unlockAlert = new AlertDialog.Builder(HomeActivity.this);
                     unlockAlert.setTitle("Unlock Door");
@@ -464,25 +475,23 @@ public class HomeActivity extends AppCompatActivity {
                     unlockAlert.setPositiveButton("Yes",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-//                                    spinnerDataList.clear();
-//                                    retrieveAllDoor_Firebase();
+                                    if(spinnerDataList != null) {
+                                        spinnerDataList.clear();
+                                        adpater.notifyDataSetChanged();
+                                    }
+
                                     mDataRef = database.getReference("/Users Details");
-                                    mDataRef.child(users.getUid()).child(door_lock_db).child("lock_Status").setValue((boolean) true);
-                                    notification("Door is unlock");
-
-                                    //                                int selected_item = choose_Door.getSelectedItemPosition();
-                                    //                                sharedPref = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
-                                    //                                editor = sharedPref.edit();
-                                    //                                editor.putInt("spinner_item", selected_item);
-                                    //                                editor.commit();
-
+                                    mDataRef.child(users.getUid()).child("Devices").child(device_name_db).child("lock_Status").setValue((boolean) true);
+                                    notification(device_name_db + " is unlock");
                                     doorResultLabel.setTextColor(Color.GREEN);
                                     doorResultLabel.setText("Unlock");
-                                    //                                sharedPref = getSharedPreferences("Position", MODE_PRIVATE);
-                                    //                                sharedPref.edit().remove("spinner_item").commit();
-                                    //                                spinnerDataList.clear();
-                                    //                                retrieveAllDoor_Firebase();
-                                    //                                adpater.notifyDataSetChanged();
+
+                                    lockBtn.setEnabled(true);
+                                    lockBtn.setBackgroundColor(Color.WHITE);
+                                    unlockBtn.setEnabled(false);
+                                    unlockBtn.setBackgroundColor(Color.LTGRAY);
+
+
 
 
                                     //                                Intent reload = new Intent(HomeActivity.this, HomeActivity.class);
@@ -500,9 +509,8 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-//        spinnerDataList.clear();
-//        retrieveAllDoor_Firebase();
-        adpater.notifyDataSetChanged();
+
+
     }
 
     @Override

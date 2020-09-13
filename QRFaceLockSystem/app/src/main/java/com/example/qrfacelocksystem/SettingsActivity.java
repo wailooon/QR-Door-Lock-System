@@ -98,7 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
                     Intent intent = new Intent(getContext(), SignInActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-//                  finish();
+                    getActivity().finish();
 //                    SharedPreferences customSharedPreference = getSharedPreferences(
 //                            "myCustomSharedPrefs", Activity.MODE_PRIVATE);
 //                    SharedPreferences.Editor editor = customSharedPreference.edit();
@@ -150,15 +150,14 @@ public class SettingsActivity extends AppCompatActivity {
 //        }
 
         private void retrieveCurrentData_Firebase() {
-            mDataRef = database.getReference("/Users Details");
+            mDataRef = database.getReference("/Users Details/" + users.getUid());
 
-            mDataRef.orderByChild("uid").equalTo(users.getUid().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+            mDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot data: dataSnapshot.getChildren()){
-                        setDBSharedPref(data.child("username").getValue().toString(), data.child("email").getValue().toString(), data.child("uid").getValue().toString(), (Boolean) data.child("lock_Status").getValue(), data.child("doorId").getValue().toString());
-                        load_data();
-                    }
+                    setUsersDBSharedPref(dataSnapshot.child("username").getValue().toString(), dataSnapshot.child("email").getValue().toString(), dataSnapshot.child("uid").getValue().toString());
+                    load_data();
+
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -166,12 +165,20 @@ public class SettingsActivity extends AppCompatActivity {
             });
         }
 
-        private void setDBSharedPref(String username, String email, String uid, Boolean lockStatus, String doorLock) {
+        private void setUsersDBSharedPref(String username, String email, String uid) {
             sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
             editor = sharedPref.edit();
             editor.putString("username_db",username);
             editor.putString("email_db",email);
             editor.putString("uid_db",uid);
+            editor.apply();
+
+        }
+
+        private void setDeviceDBSharedPref(String device_name, Boolean lockStatus, String doorLock) {
+            sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            editor = sharedPref.edit();
+            editor.putString("device_name_db",device_name);
             editor.putBoolean("lockStatus_db",lockStatus);
             editor.putString("doorCode_db",doorLock);
             editor.apply();
