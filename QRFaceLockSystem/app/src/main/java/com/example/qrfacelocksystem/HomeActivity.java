@@ -89,7 +89,7 @@ public class HomeActivity extends AppCompatActivity {
     private ArrayList<String> spinnerDataList;
     private ValueEventListener listener;
 
-    private Button unlockBtn, lockBtn;
+    private Button unlockBtn, lockBtn, historyBtn;
     private Button logout;
 
     private TextView welcomeLabel, doorCodeLabel, doorResultLabel;
@@ -116,6 +116,7 @@ public class HomeActivity extends AppCompatActivity {
 
         unlockBtn = (Button) findViewById(R.id.unlock_button);
         lockBtn = (Button) findViewById(R.id.lock_button);
+        historyBtn = (Button) findViewById(R.id.history_button);
 
         welcomeLabel = (TextView)findViewById(R.id.welcomeSlogan);
         doorCodeLabel = (TextView)findViewById(R.id.doorID);
@@ -132,6 +133,7 @@ public class HomeActivity extends AppCompatActivity {
 
         lockBtn_Click();
         unLockBtn_Click();
+        historyBtn_Click();
 
 
 
@@ -451,13 +453,15 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void firebaseHistoryDatabaseRecord(String device_name, String door_id, String lock_status, String date, String time) {
+    private void firebaseHistoryDatabaseRecord(String device_name,String description, String door_id, String lock_status, String dateAndTime) {
         load_data();
 
-        HistoryInfo newHistory = new HistoryInfo(device_name, door_id,lock_status, date, time);
+        HistoryInfo newHistory = new HistoryInfo(device_name, description, door_id,lock_status, dateAndTime);
+
+        String getDateAndTime = GetCurrentDate() + "(" + GetCurrentTime() + ")";
 
         mDataRef = database.getReference("/Users Details/");
-        mDataRef.child(users.getUid()).child("Attempt History").child(device_name_db).setValue(newHistory);
+        mDataRef.child(users.getUid()).child("Attempt History").child(device_name_db).child(getDateAndTime).setValue(newHistory);
     }
 
     private void update_UI(){
@@ -519,7 +523,9 @@ public class HomeActivity extends AppCompatActivity {
                                     doorResultLabel.setTextColor(Color.RED);
                                     doorResultLabel.setText("Lock");
                                     sendNotificationSMS("\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is LOCK" + ", \nDOOR STATUS: LOCK");
-                                    firebaseHistoryDatabaseRecord(device_name_db, door_lock_db, doorResultLabel.getText().toString(),GetCurrentDate(),GetCurrentTime());
+                                    String lockDescri = device_name_db + " is LOCK at " + GetCurrentDate() + "(" + GetCurrentTime() + ")";
+                                    String getDateAndTime = GetCurrentDate() + "(" + GetCurrentTime() + ")";
+                                    firebaseHistoryDatabaseRecord(device_name_db, lockDescri, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
 
 
                                     unlockBtn.setEnabled(true);
@@ -568,7 +574,9 @@ public class HomeActivity extends AppCompatActivity {
                                     doorResultLabel.setTextColor(Color.GREEN);
                                     doorResultLabel.setText("Unlock");
                                     sendNotificationSMS("\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is UNLOCK" + ", \nDOOR STATUS: UNLOCK");
-                                    firebaseHistoryDatabaseRecord(device_name_db, door_lock_db, doorResultLabel.getText().toString(), GetCurrentDate(),GetCurrentTime());
+                                    String unlockDescri = device_name_db + " is UNLOCK at " + GetCurrentDate() + "(" + GetCurrentTime() + ")";
+                                    String getDateAndTime = GetCurrentDate() + "(" + GetCurrentTime() + ")";
+                                    firebaseHistoryDatabaseRecord(device_name_db, unlockDescri, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
 
                                     lockBtn.setEnabled(true);
                                     lockBtn.setBackgroundColor(Color.WHITE);
@@ -596,6 +604,26 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
+
+    private void historyBtn_Click(){
+        load_data();
+
+        historyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, HistoryActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+    }
+
+
+
+
+
+
 
     @Override
     protected void onResume() {
@@ -653,19 +681,19 @@ public class HomeActivity extends AppCompatActivity {
         public String deviceName;
         public String doorId;
         public String lock_Status;
-        public String date;
-        public String time;
+        public String dateAndTime;
+        public String description;
 
         public HistoryInfo() {
             // Default constructor required for calls to DataSnapshot.getValue(User.class)
         }
 
-        public HistoryInfo(String device_name, String door_id, String lockStatus, String date, String time) {
+        public HistoryInfo(String device_name, String description, String door_id, String lockStatus, String dateAndTime) {
+            this.description = description;
             this.deviceName = device_name;
             this.doorId = door_id;
             this.lock_Status = lockStatus;
-            this.date = date;
-            this.time = time;
+            this.dateAndTime = dateAndTime;
         }
     }
 

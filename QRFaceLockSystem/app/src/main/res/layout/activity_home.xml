@@ -7,54 +7,20 @@
     tools:context=".HomeActivity">
 
     <Button
-        android:id="@+id/unlock_button"
-        android:layout_width="162dp"
-        android:layout_height="53dp"
+        android:id="@+id/history_button"
+        android:layout_width="324dp"
+        android:layout_height="48dp"
         android:background="#FFFFFF"
-        android:drawableStart="@drawable/unlock_icon"
         android:padding="16dp"
-        android:text="Unlock"
-        android:textColor="#000000"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:text="Check current door attempt history"
+        android:textColor="#5A5454"
+        android:textSize="14sp"
+        android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.879"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.769" />
-
-    <Button
-        android:id="@+id/lock_button"
-        android:layout_width="162dp"
-        android:layout_height="53dp"
-        android:background="#FFFFFF"
-        android:drawableStart="@drawable/lock_icon"
-        android:padding="16dp"
-        android:text="Lock"
-        android:textColor="#000000"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.12"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.769" />
-
-    <TextView
-        android:id="@+id/doorStatusLabel"
-        android:layout_width="154dp"
-        android:layout_height="46dp"
-        android:text="Door Status:"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.116"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.579" />
+        app:layout_constraintVertical_bias="0.952" />
 
     <TextView
         android:id="@+id/deviceLabel"
@@ -72,21 +38,6 @@
         app:layout_constraintVertical_bias="0.007" />
 
     <TextView
-        android:id="@+id/doorIDLabel2"
-        android:layout_width="118dp"
-        android:layout_height="33dp"
-        android:text="Door Code:"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:textStyle="normal|bold|italic"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.903" />
-
-    <TextView
         android:id="@+id/doorStatusResult"
         android:layout_width="154dp"
         android:layout_height="46dp"
@@ -97,7 +48,7 @@
         app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.578" />
+        app:layout_constraintVertical_bias="0.357" />
 
     <TextView
         android:id="@+id/doorID"
@@ -110,7 +61,72 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.943" />
+        app:layout_constraintVertical_bias="0.854" />
+
+    <TextView
+        android:id="@+id/doorIDLabel2"
+        android:layout_width="118dp"
+        android:layout_height="33dp"
+        android:text="Door Code:"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="normal|bold|italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.814" />
+
+    <TextView
+        android:id="@+id/doorStatusLabel"
+        android:layout_width="154dp"
+        android:layout_height="46dp"
+        android:text="Door Status:"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.116"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.359" />
+
+    <Button
+        android:id="@+id/lock_button"
+        android:layout_width="162dp"
+        android:layout_height="53dp"
+        android:background="#FFFFFF"
+        android:drawableStart="@drawable/lock_icon"
+        android:padding="16dp"
+        android:text="Lock"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.547" />
+
+    <Button
+        android:id="@+id/unlock_button"
+        android:layout_width="162dp"
+        android:layout_height="53dp"
+        android:background="#FFFFFF"
+        android:drawableStart="@drawable/unlock_icon"
+        android:padding="16dp"
+        android:text="Unlock"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.879"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.547" />
 
     <TextView
         android:id="@+id/welcomeSlogan"
