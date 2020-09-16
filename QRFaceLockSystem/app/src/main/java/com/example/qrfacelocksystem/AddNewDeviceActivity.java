@@ -54,7 +54,7 @@ public class AddNewDeviceActivity extends AppCompatActivity {
 
     private ActionBar actionBar;
 
-    private String username_shared, email_shared, door_lock_shared, password_shared, device_name_shared;
+    private String username_shared, email_shared, door_lock_shared, password_shared, device_name_shared, phone_shared;
     private Boolean lock_status_shared;
 
     private String confirmation_message;
@@ -130,7 +130,7 @@ public class AddNewDeviceActivity extends AppCompatActivity {
 
 
     private void firebaseDatabaseRecord(String device_name, String door_id, Boolean lock_status) {
-        DeviceDetails newDevice = new DeviceDetails(door_id, device_name,lock_status);
+        DeviceDetails newDevice = new DeviceDetails(device_name, door_id,lock_status);
 
         mDataRef = database.getReference("/Users Details/");
         mDataRef.child(users.getUid()).child("Devices").child(device_name).setValue(newDevice);
@@ -167,6 +167,7 @@ public class AddNewDeviceActivity extends AppCompatActivity {
         username_shared = sharedPref.getString("username", "");
         email_shared = sharedPref.getString("email", "");
         password_shared = sharedPref.getString("password", "");
+        phone_shared = sharedPref.getString("phone_num", "");
         lock_status_shared = sharedPref.getBoolean("lock_status", false);
         door_lock_shared = sharedPref.getString("door_code", "");
     }
@@ -295,10 +296,10 @@ public class AddNewDeviceActivity extends AppCompatActivity {
             // Default constructor required for calls to DataSnapshot.getValue(User.class)
         }
 
-        public DeviceDetails(String door_id, String device_name, Boolean lockStatus) {
+        public DeviceDetails(String device_name, String door_id, Boolean lockStatus) {
 
-            this.doorId = door_id;
             this.deviceName = device_name;
+            this.doorId = door_id;
             this.lock_Status = lockStatus;
         }
     }

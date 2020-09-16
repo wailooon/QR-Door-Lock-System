@@ -15,6 +15,11 @@
     <string name="add_new_header">New Device</string>
     <string name="add_new_btn_label">Add New Device</string>
 
+    <!-- History Preferences -->
+    <string name="history_header">Door History</string>
+    <string name="history_btn_label">Lock / Unlock History</string>
+
+
     <!-- Account Preferences -->
     <string name="account_setting_header">Account Settings</string>
     <string name="user_name">User Name</string>

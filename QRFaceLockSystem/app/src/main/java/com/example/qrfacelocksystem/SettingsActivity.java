@@ -125,6 +125,17 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
+            Preference historyBtn = (Preference) findPreference("history_btn");
+            historyBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(getContext(), HistoryActivity.class);
+                    startActivity(intent);
+
+                    return true;
+                }
+            });
+
 
 //            editUserName.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 //                @Override

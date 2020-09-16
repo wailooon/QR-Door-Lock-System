@@ -3,6 +3,9 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 
     defaultConfig {
         applicationId "com.example.qrfacelocksystem"
@@ -43,6 +46,8 @@ dependencies {
 
     implementation 'com.otaliastudios:cameraview:2.6.3'
     implementation 'com.karumi:dexter:6.2.1'
+
+    implementation group: "com.twilio.sdk", name: "twilio", version: "7.55.1"
 
 
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'

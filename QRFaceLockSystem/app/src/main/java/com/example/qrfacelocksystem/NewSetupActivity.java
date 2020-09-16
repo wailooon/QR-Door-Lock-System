@@ -46,7 +46,7 @@ public class NewSetupActivity extends AppCompatActivity {
     private DatabaseReference mDataRef;
 
     private TextView doorLock_Code;
-    private EditText usernameField, emailField, passwordField, deviceNameField;
+    private EditText usernameField, emailField, passwordField, deviceNameField, phoneField;
     private Button setupButton;
     private CheckBox showPasswordCheckbox;
     private ProgressBar progressBar;
@@ -75,6 +75,7 @@ public class NewSetupActivity extends AppCompatActivity {
         emailField = (EditText) findViewById(R.id.emailTextField);
         passwordField = (EditText) findViewById(R.id.passwordTextField);
         deviceNameField = (EditText) findViewById(R.id.deviceNameTextField);
+        phoneField = (EditText)findViewById(R.id.phoneTextField);
 
         setupButton = (Button) findViewById(R.id.addNewButton);
 
@@ -128,8 +129,8 @@ public class NewSetupActivity extends AppCompatActivity {
     }
 
 
-    private void firebaseDatabaseRecord(String device_name, String door_id, String user_name, String email_address, String password_field, Boolean lock_status) {
-        UserDetails newUser = new UserDetails(users.getUid(), user_name, email_address, password_field);
+    private void firebaseDatabaseRecord(String device_name, String door_id, String user_name, String email_address, String phone_number, String password_field, Boolean lock_status) {
+        UserDetails newUser = new UserDetails(users.getUid(), user_name, email_address, phone_number,password_field);
         DeviceDetails newDevice = new DeviceDetails(door_id,device_name,lock_status);
 
         mDataRef = database.getReference("/Users Details");
@@ -171,7 +172,7 @@ public class NewSetupActivity extends AppCompatActivity {
                                                     users.sendEmailVerification().addOnCompleteListener(NewSetupActivity.this, new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
-                                                            firebaseDatabaseRecord(deviceNameField.getText().toString(), doorLock_Code.getText().toString(), usernameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString(), lock_Status);
+                                                            firebaseDatabaseRecord(deviceNameField.getText().toString(), doorLock_Code.getText().toString(), usernameField.getText().toString(), emailField.getText().toString(),phoneField.getText().toString(), passwordField.getText().toString(), lock_Status);
 
                                                             confirmation_message = "A confirmation email has been sent to " + emailField.getText().toString().trim() + ". Please check your mailbox and activate your account.";
                                                             sharedPref = PreferenceManager.getDefaultSharedPreferences(NewSetupActivity.this);
@@ -182,7 +183,7 @@ public class NewSetupActivity extends AppCompatActivity {
                                                             editor.putString("password", passwordField.getText().toString());
                                                             editor.putString("device_name", deviceNameField.getText().toString());
                                                             editor.putString("door_code", doorLock_Code.getText().toString());
-
+                                                            editor.putString("phone_num", phoneField.getText().toString());
                                                             editor.putString("email", emailField.getText().toString());
                                                             editor.putBoolean("lock_status", lock_Status);
                                                             editor.apply();
@@ -341,20 +342,18 @@ public class NewSetupActivity extends AppCompatActivity {
         public String username;
         public String uid;
         public String email;
+        public String phone;
         public String password;
-
-        public String deviceName;
-        public String doorId;
-        public boolean lock_Status;
 
         public UserDetails() {
             // Default constructor required for calls to DataSnapshot.getValue(User.class)
         }
 
-        public UserDetails(String uid, String username, String email, String password) {
+        public UserDetails(String uid, String username, String email,String phone, String password) {
             this.uid = uid;
             this.username = username;
             this.email = email;
+            this.phone = phone;
             this.password = password;
         }
     }

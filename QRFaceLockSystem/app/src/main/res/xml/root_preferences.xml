@@ -8,6 +8,14 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/history_header">
+        <Preference
+            android:key="history_btn"
+            android:title="@string/history_btn_label" />
+
+    </PreferenceCategory>
+
+
     <PreferenceCategory app:title="@string/account_setting_header">
 
         <!--        <EditTextPreference-->

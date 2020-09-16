@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.qrfacelocksystem">
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    package="com.example.qrfacelocksystem"
+    >
 
     <application
         android:allowBackup="true"
@@ -13,28 +10,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity"
-            android:theme="@style/AppThemeNoActionBar">
+        <activity android:name=".HistoryActivity"
+            android:parentActivityName=".SettingsActivity">
 
         </activity>
-
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/AppThemeNoActionBar"></activity>
         <activity android:name=".ConfimationEmailActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".HomeActivity" />
-        <activity
-            android:name=".HomeActivity">
-
-        </activity>
-        <activity android:name=".ScanQRActivity">
-
-        </activity>
-
+        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".ScanQRActivity"></activity>
         <activity
             android:name=".ForgotPasswordActivity"
             android:parentActivityName=".SignInActivity" />
-
         <activity android:name=".SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,18 +34,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewSetupActivity"
-            android:parentActivityName=".HomeActivity"></activity>
-
-        <activity android:name=".AddNewDeviceActivity"
-            android:parentActivityName=".ScanQRActivity"></activity>
+        <activity
+            android:name=".NewSetupActivity"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".AddNewDeviceActivity"
+            android:parentActivityName=".ScanQRActivity" />
         <activity android:name=".MainActivity" />
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="barcode" />
     </application>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

@@ -7,36 +7,6 @@
     tools:context=".NewSetupActivity">
 
 
-    <TextView
-        android:id="@+id/deviceNameLabel"
-        android:layout_width="145dp"
-        android:layout_height="40dp"
-        android:text="Device Name: "
-        android:textColor="#000000"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.06"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.447" />
-
-    <EditText
-        android:id="@+id/deviceNameTextField"
-        android:layout_width="208dp"
-        android:layout_height="40dp"
-        android:ems="10"
-        android:hint="Enter device name"
-        android:inputType="textPersonName"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.891"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.445" />
-
     <ProgressBar
         android:id="@+id/activity_setup_progressBar"
         style="?android:attr/progressBarStyle"
@@ -52,19 +22,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.907" />
 
-    <ImageView
-        android:id="@+id/settingIcon"
-        android:layout_width="130dp"
-        android:layout_height="119dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/forgotPwLabel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.788"
-        app:srcCompat="@drawable/setting_icon" />
-
     <TextView
         android:id="@+id/newLabel"
         android:layout_width="343dp"
@@ -74,11 +31,23 @@
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.235"
+        app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.297" />
+        app:layout_constraintVertical_bias="0.299" />
+
+    <TextView
+        android:id="@+id/door_code"
+        android:layout_width="144dp"
+        android:layout_height="23dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.37"
+        app:layout_constraintStart_toEndOf="@+id/doorLockLabel"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.368" />
 
     <TextView
         android:id="@+id/doorLockLabel"
@@ -89,23 +58,24 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.057"
+        app:layout_constraintHorizontal_bias="0.06"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.367" />
+        app:layout_constraintVertical_bias="0.372" />
 
-    <TextView
-        android:id="@+id/door_code"
-        android:layout_width="144dp"
-        android:layout_height="23dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/settingIcon"
+        android:layout_width="130dp"
+        android:layout_height="119dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/forgotPwLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.367"
-        app:layout_constraintStart_toEndOf="@+id/doorLockLabel"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.365" />
+        app:layout_constraintVertical_bias="0.788"
+        app:srcCompat="@drawable/setting_icon" />
 
     <Button
         android:id="@+id/addNewButton"
@@ -122,20 +92,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.909" />
 
-    <TextView
-        android:id="@+id/nameLabel"
-        android:layout_width="145dp"
-        android:layout_height="40dp"
-        android:text="Username: "
-        android:textColor="#000000"
-        android:textSize="18sp"
+    <CheckBox
+        android:id="@+id/showPassCheckBox"
+        android:layout_width="146dp"
+        android:layout_height="28dp"
+        android:layout_marginBottom="40dp"
+        android:text="Show Password"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.06"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.545" />
+        app:layout_constraintBottom_toBottomOf="@+id/addNewButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.916"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordTextField"
+        app:layout_constraintVertical_bias="0.04" />
 
     <EditText
         android:id="@+id/nameTextField"
@@ -152,6 +121,97 @@
         app:layout_constraintTop_toTopOf="@+id/nameLabel"
         app:layout_constraintVertical_bias="1.0" />
 
+    <TextView
+        android:id="@+id/PhoneNumLabel"
+        android:layout_width="145dp"
+        android:layout_height="40dp"
+        android:text="Phone Number: "
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/nameLabel"
+        app:layout_constraintTop_toBottomOf="@+id/nameLabel"
+        app:layout_constraintVertical_bias="0.183" />
+
+    <TextView
+        android:id="@+id/nameLabel"
+        android:layout_width="145dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:text="Username: "
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.06"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.532" />
+
+    <TextView
+        android:id="@+id/emailLabel"
+        android:layout_width="145dp"
+        android:layout_height="40dp"
+        android:text="Email Address: "
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/nameLabel"
+        app:layout_constraintTop_toBottomOf="@+id/nameLabel"
+        app:layout_constraintVertical_bias="0.004" />
+
+    <EditText
+        android:id="@+id/deviceNameTextField"
+        android:layout_width="208dp"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:hint="Enter device name"
+        android:inputType="textPersonName"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.891"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.463" />
+
+    <EditText
+        android:id="@+id/passwordTextField"
+        android:layout_width="208dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:hint="Enter password"
+        android:inputType="textPassword"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/passwordLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintStart_toEndOf="@+id/passwordLabel"
+        app:layout_constraintTop_toTopOf="@+id/passwordLabel"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/phoneTextField"
+        android:layout_width="208dp"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:hint="Enter phone number"
+        android:inputType="phone"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.891"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.673" />
+
     <EditText
         android:id="@+id/emailTextField"
         android:layout_width="208dp"
@@ -166,37 +226,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/emailLabel"
         app:layout_constraintTop_toTopOf="@+id/emailLabel"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/emailLabel"
-        android:layout_width="145dp"
-        android:layout_height="40dp"
-        android:text="Email Address: "
-        android:textColor="#000000"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/nameLabel"
-        app:layout_constraintTop_toBottomOf="@+id/nameLabel"
-        app:layout_constraintVertical_bias="0.073" />
-
-    <EditText
-        android:id="@+id/passwordTextField"
-        android:layout_width="208dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="20dp"
-        android:ems="10"
-        android:hint="Enter password"
-        android:inputType="textPassword"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/passwordLabel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/passwordLabel"
-        app:layout_constraintTop_toTopOf="@+id/passwordLabel"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/passwordLabel"
@@ -207,24 +237,26 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/nameLabel"
-        app:layout_constraintTop_toBottomOf="@+id/nameLabel"
-        app:layout_constraintVertical_bias="0.331" />
-
-    <CheckBox
-        android:id="@+id/showPassCheckBox"
-        android:layout_width="146dp"
-        android:layout_height="28dp"
-        android:layout_marginBottom="40dp"
-        android:text="Show Password"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/addNewButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.924"
+        app:layout_constraintHorizontal_bias="0.06"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordTextField"
-        app:layout_constraintVertical_bias="0.125" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.744" />
+
+    <TextView
+        android:id="@+id/deviceNameLabel"
+        android:layout_width="145dp"
+        android:layout_height="40dp"
+        android:text="Device Name: "
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.06"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.463" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

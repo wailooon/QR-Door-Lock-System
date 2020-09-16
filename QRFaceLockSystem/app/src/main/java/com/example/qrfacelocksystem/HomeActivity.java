@@ -14,6 +14,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,9 +34,29 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+// Install the Java helper library from twilio.com/docs/libraries/java
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Text;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -49,12 +71,15 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser users;
 
+    public static final String ACCOUNT_SID = "ACfeb3175660e8f538c64caa1e9d82b912";
+    public static final String AUTH_TOKEN = "4f3da5ddb75fbf38318886b157f37a24";
 
-    private String username_shared, email_shared, uid_shared, door_lock_shared, device_name_shared;
+
+    private String username_shared, email_shared, uid_shared, door_lock_shared, device_name_shared, phone_shared;
     private Boolean lock_status_shared;
 
     private int currentDoorId;
-    private String uid_db, username_db, email_db, password_db, door_lock_db, device_name_db;
+    private String uid_db, username_db, email_db, password_db, door_lock_db, device_name_db, phone_db;
     private boolean lock_status_db;
 
     private ActionBar actionBar;
@@ -74,6 +99,10 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        StrictMode.ThreadPolicy policy = new
+                StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         database = FirebaseDatabase.getInstance();
 
         mAuth = FirebaseAuth.getInstance();
@@ -91,7 +120,6 @@ public class HomeActivity extends AppCompatActivity {
         welcomeLabel = (TextView)findViewById(R.id.welcomeSlogan);
         doorCodeLabel = (TextView)findViewById(R.id.doorID);
         doorResultLabel = (TextView)findViewById(R.id.doorStatusResult);
-
 
 
 
@@ -164,7 +192,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void selectedItem() {
-
 
         choose_Door.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -240,7 +267,46 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    private void sendNotificationSMS(String messageContent) {
+        retrieveUser_Firebase();
 
+        HttpClient httpclient = new DefaultHttpClient();
+
+        HttpPost httppost = new HttpPost(
+                "https://api.twilio.com/2010-04-01/Accounts/"+ACCOUNT_SID+"/SMS/Messages");
+        String base64EncodedCredentials = "Basic "
+                + Base64.encodeToString(
+                (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
+                Base64.NO_WRAP);
+
+        httppost.setHeader("Authorization",
+                base64EncodedCredentials);
+        try {
+
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("From",
+                    "+17605469479"));
+            nameValuePairs.add(new BasicNameValuePair("To",
+                    phone_db));
+            nameValuePairs.add(new BasicNameValuePair("Body",
+                    messageContent));
+
+            httppost.setEntity(new UrlEncodedFormEntity(
+                    nameValuePairs));
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            System.out.println("Entity post is: "
+                    + EntityUtils.toString(entity));
+
+
+        } catch (ClientProtocolException e) {
+
+        } catch (IOException e) {
+
+        }
+    }
 
     private void chooseCurrentData_Firebase(String device) {
 //        load_data_from_setup();
@@ -298,7 +364,7 @@ public class HomeActivity extends AppCompatActivity {
         mDataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    setUsersDBSharedPref(snapshot.child("username").getValue().toString(), snapshot.child("email").getValue().toString(), snapshot.child("uid").getValue().toString());
+                    setUsersDBSharedPref(snapshot.child("username").getValue().toString(), snapshot.child("email").getValue().toString(),snapshot.child("phone").getValue().toString(), snapshot.child("uid").getValue().toString());
             }
 
             @Override
@@ -309,11 +375,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    private void setUsersDBSharedPref(String username, String email, String uid) {
+    private void setUsersDBSharedPref(String username, String email, String phone, String uid) {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPref.edit();
         editor.putString("username_db",username);
         editor.putString("email_db",email);
+        editor.putString("phone_num_db",phone);
         editor.putString("uid_db",uid);
         editor.apply();
 
@@ -335,6 +402,7 @@ public class HomeActivity extends AppCompatActivity {
         device_name_db = sharedPref.getString("device_name_db", "");
         username_db = sharedPref.getString("username_db", "");
         email_db = sharedPref.getString("email_db", "");
+        phone_db = sharedPref.getString("phone_num_db", "");
         uid_db = sharedPref.getString("uid_db", "");
         lock_status_db = sharedPref.getBoolean("lockStatus_db", false);
         door_lock_db = sharedPref.getString("doorCode_db", "");
@@ -347,6 +415,7 @@ public class HomeActivity extends AppCompatActivity {
         device_name_shared = sharedPref.getString("device_name", "");
         username_shared = sharedPref.getString("username", "");
         email_shared = sharedPref.getString("email", "");
+        phone_shared = sharedPref.getString("phone_num", "");
         uid_shared = sharedPref.getString("uid", "");
         lock_status_shared = sharedPref.getBoolean("lock_status", false);
         door_lock_shared = sharedPref.getString("door_code", "");
@@ -357,6 +426,8 @@ public class HomeActivity extends AppCompatActivity {
 
         sharedPref = getSharedPreferences("device_name_db", MODE_PRIVATE);
         sharedPref.edit().remove("device_name_db").commit();
+        sharedPref = getSharedPreferences("phone_num_db", MODE_PRIVATE);
+        sharedPref.edit().remove("phone_num_db").commit();
         sharedPref = getSharedPreferences("username_db", MODE_PRIVATE);
         sharedPref.edit().remove("username_db").commit();
         sharedPref = getSharedPreferences("email_db", MODE_PRIVATE);
@@ -378,6 +449,15 @@ public class HomeActivity extends AppCompatActivity {
         actionBar.setTitle(heading);
         actionBar.show();
 
+    }
+
+    private void firebaseHistoryDatabaseRecord(String device_name, String door_id, String lock_status, String date, String time) {
+        load_data();
+
+        HistoryInfo newHistory = new HistoryInfo(device_name, door_id,lock_status, date, time);
+
+        mDataRef = database.getReference("/Users Details/");
+        mDataRef.child(users.getUid()).child("Attempt History").child(device_name_db).setValue(newHistory);
     }
 
     private void update_UI(){
@@ -438,6 +518,8 @@ public class HomeActivity extends AppCompatActivity {
                                     notification(device_name_db + " is lock");
                                     doorResultLabel.setTextColor(Color.RED);
                                     doorResultLabel.setText("Lock");
+                                    sendNotificationSMS("\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is LOCK" + ", \nDOOR STATUS: LOCK");
+                                    firebaseHistoryDatabaseRecord(device_name_db, door_lock_db, doorResultLabel.getText().toString(),GetCurrentDate(),GetCurrentTime());
 
 
                                     unlockBtn.setEnabled(true);
@@ -485,6 +567,8 @@ public class HomeActivity extends AppCompatActivity {
                                     notification(device_name_db + " is unlock");
                                     doorResultLabel.setTextColor(Color.GREEN);
                                     doorResultLabel.setText("Unlock");
+                                    sendNotificationSMS("\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is UNLOCK" + ", \nDOOR STATUS: UNLOCK");
+                                    firebaseHistoryDatabaseRecord(device_name_db, door_lock_db, doorResultLabel.getText().toString(), GetCurrentDate(),GetCurrentTime());
 
                                     lockBtn.setEnabled(true);
                                     lockBtn.setBackgroundColor(Color.WHITE);
@@ -523,6 +607,22 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
+    private String GetCurrentDate(){
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY");
+        Date newDate = new Date();
+
+        return dateFormat.format(newDate);
+    }
+
+    private String GetCurrentTime(){
+        DateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a");
+        Date newTime = new Date();
+
+        return timeFormat.format(newTime);
+
+    }
+
+
     public class UserDetails {
 
         public String deviceName;
@@ -547,6 +647,28 @@ public class HomeActivity extends AppCompatActivity {
             this.lock_Status = lockStatus;
         }
     }
+
+    public class HistoryInfo {
+
+        public String deviceName;
+        public String doorId;
+        public String lock_Status;
+        public String date;
+        public String time;
+
+        public HistoryInfo() {
+            // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        }
+
+        public HistoryInfo(String device_name, String door_id, String lockStatus, String date, String time) {
+            this.deviceName = device_name;
+            this.doorId = door_id;
+            this.lock_Status = lockStatus;
+            this.date = date;
+            this.time = time;
+        }
+    }
+
 
     // create an action bar button
     @Override

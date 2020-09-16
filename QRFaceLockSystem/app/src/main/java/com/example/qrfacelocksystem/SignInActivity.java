@@ -38,7 +38,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class SignInActivity extends AppCompatActivity {
@@ -88,6 +93,8 @@ public class SignInActivity extends AppCompatActivity {
 
 
         checkIsLogin();
+
+
 
         signInBtn_Click();
         showPasswordCheckbox();
@@ -273,6 +280,7 @@ public class SignInActivity extends AppCompatActivity {
         Toast.makeText(this, message,
                 Toast.LENGTH_SHORT).show();
     }
+
 
     private boolean validateEmail() {
 
