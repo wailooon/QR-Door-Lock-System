@@ -4,18 +4,30 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.SpannedString;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +38,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -56,7 +72,21 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Header;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -71,14 +101,17 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser users;
 
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
     public static final String ACCOUNT_SID = "ACfeb3175660e8f538c64caa1e9d82b912";
-    public static final String AUTH_TOKEN = "4f3da5ddb75fbf38318886b157f37a24";
+    public static final String AUTH_TOKEN = "3586e33cc65a5608cdded1018bdbe0ab";
 
 
     private String username_shared, email_shared, uid_shared, door_lock_shared, device_name_shared, phone_shared;
     private Boolean lock_status_shared;
 
     private int currentDoorId;
+    private String currentLocation;
     private String uid_db, username_db, email_db, password_db, door_lock_db, device_name_db, phone_db;
     private boolean lock_status_db;
 
@@ -121,7 +154,6 @@ public class HomeActivity extends AppCompatActivity {
         welcomeLabel = (TextView)findViewById(R.id.welcomeSlogan);
         doorCodeLabel = (TextView)findViewById(R.id.doorID);
         doorResultLabel = (TextView)findViewById(R.id.doorStatusResult);
-
 
 
 //        retrieveCurrentData_Firebase();
@@ -272,42 +304,86 @@ public class HomeActivity extends AppCompatActivity {
     private void sendNotificationSMS(String messageContent) {
         retrieveUser_Firebase();
 
-        HttpClient httpclient = new DefaultHttpClient();
+        String body = messageContent;
+        String from = "+17605469479";
+        String to = phone_db;
 
-        HttpPost httppost = new HttpPost(
-                "https://api.twilio.com/2010-04-01/Accounts/"+ACCOUNT_SID+"/SMS/Messages");
-        String base64EncodedCredentials = "Basic "
-                + Base64.encodeToString(
-                (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
-                Base64.NO_WRAP);
+        String base64EncodedCredentials = "Basic " + Base64.encodeToString(
+                (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(), Base64.NO_WRAP
+        );
 
-        httppost.setHeader("Authorization",
-                base64EncodedCredentials);
-        try {
+        Map<String, String> data = new HashMap<>();
+        data.put("From", from);
+        data.put("To", to);
+        data.put("Body", body);
 
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-            nameValuePairs.add(new BasicNameValuePair("From",
-                    "+17605469479"));
-            nameValuePairs.add(new BasicNameValuePair("To",
-                    phone_db));
-            nameValuePairs.add(new BasicNameValuePair("Body",
-                    messageContent));
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.twilio.com/2010-04-01/")
+                .build();
+        TwilioApi api = retrofit.create(TwilioApi.class);
 
-            httppost.setEntity(new UrlEncodedFormEntity(
-                    nameValuePairs));
+        api.sendMessage(ACCOUNT_SID, base64EncodedCredentials, data).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful())
+                    Log.d("TAG", "onResponse->success");
+                else
+                    Log.d("TAG", "onResponse->failure");
+            }
 
-            // Execute HTTP Post Request
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-            System.out.println("Entity post is: "
-                    + EntityUtils.toString(entity));
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d("TAG", "onFailure");
+            }
+        });
 
 
-        } catch (ClientProtocolException e) {
 
-        } catch (IOException e) {
+//        HttpClient httpclient = new DefaultHttpClient();
+//
+//        HttpPost httppost = new HttpPost(
+//                "https://api.twilio.com/2010-04-01/Accounts/"+ACCOUNT_SID+"/SMS/Messages");
+//        String base64EncodedCredentials = "Basic "
+//                + Base64.encodeToString(
+//                (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
+//                Base64.NO_WRAP);
+//
+//        httppost.setHeader("Authorization",
+//                base64EncodedCredentials);
+//        try {
+//            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+//            nameValuePairs.add(new BasicNameValuePair("From",
+//                    "+17605469479"));
+//            nameValuePairs.add(new BasicNameValuePair("To",
+//                    phone_db));
+//            nameValuePairs.add(new BasicNameValuePair("Body",
+//                    messageContent));
+//
+//            httppost.setEntity(new UrlEncodedFormEntity(
+//                    nameValuePairs));
+//
+//            // Execute HTTP Post Request
+//            HttpResponse response = httpclient.execute(httppost);
+//            HttpEntity entity = response.getEntity();
+//            System.out.println("Entity post is: "
+//                    + EntityUtils.toString(entity));
+//
+//
+//        } catch (ClientProtocolException e) {
+//
+//        } catch (IOException e) {
+//
+//        }
+    }
 
-        }
+    interface TwilioApi {
+        @FormUrlEncoded
+        @POST("Accounts/{ACCOUNT_SID}/Messages")
+        Call<ResponseBody> sendMessage(
+                @Path("ACCOUNT_SID") String accountSId,
+                @Header("Authorization") String signature,
+                @FieldMap Map<String, String> metadata
+        );
     }
 
     private void chooseCurrentData_Firebase(String device) {
@@ -401,6 +477,7 @@ public class HomeActivity extends AppCompatActivity {
     private void load_data() {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
+        currentLocation = sharedPref.getString("location","");
         device_name_db = sharedPref.getString("device_name_db", "");
         username_db = sharedPref.getString("username_db", "");
         email_db = sharedPref.getString("email_db", "");
@@ -453,15 +530,61 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void firebaseHistoryDatabaseRecord(String device_name,String description, String door_id, String lock_status, String dateAndTime) {
+    private void firebaseHistoryDatabaseRecord(String imageResource, String device_name,String description,String location, String door_id, String lock_status, String dateAndTime) {
         load_data();
 
-        HistoryInfo newHistory = new HistoryInfo(device_name, description, door_id,lock_status, dateAndTime);
+        HistoryInfo newHistory = new HistoryInfo(imageResource, device_name, description,location, door_id,lock_status, dateAndTime);
 
         String getDateAndTime = GetCurrentDate() + "(" + GetCurrentTime() + ")";
 
         mDataRef = database.getReference("/Users Details/");
         mDataRef.child(users.getUid()).child("Attempt History").child(device_name_db).child(getDateAndTime).setValue(newHistory);
+    }
+
+
+    private void GetCurrentLocation() {
+        //Initialize fusedLocationProviderClient
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        //Check permission
+        if(ActivityCompat.checkSelfPermission(HomeActivity.this
+                , Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            //When permission granted
+            fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    //Initialize Location
+                    Location location = task.getResult();
+                    if(location != null){
+                        try {
+                            //Initialize geoCoder
+                            Geocoder geocoder = new Geocoder(HomeActivity.this,
+                                    Locale.getDefault());
+
+                            //Initialize address list
+                            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
+
+
+                            setCurrentLocation(addresses.get(0).getAddressLine(0));
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+        }else{
+            //When permission denied
+            ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+
+        }
+    }
+
+    private void setCurrentLocation(String addressLine) {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sharedPref.edit();
+        editor.putString("location",addressLine);
+        editor.apply();
     }
 
     private void update_UI(){
@@ -522,10 +645,15 @@ public class HomeActivity extends AppCompatActivity {
                                     notification(device_name_db + " is lock");
                                     doorResultLabel.setTextColor(Color.RED);
                                     doorResultLabel.setText("Lock");
-                                    sendNotificationSMS("\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is LOCK" + ", \nDOOR STATUS: LOCK");
-                                    String lockDescri = device_name_db + " is LOCK at " + GetCurrentDate() + "(" + GetCurrentTime() + ")";
+
+                                    GetCurrentLocation();
+                                    load_data();
+                                    String lockDescri = device_name_db + " is LOCK at " + currentLocation ;
                                     String getDateAndTime = GetCurrentDate() + "(" + GetCurrentTime() + ")";
-                                    firebaseHistoryDatabaseRecord(device_name_db, lockDescri, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
+                                    String lockVector = "https://firebasestorage.googleapis.com/v0/b/qrfacelocksystem.appspot.com/o/lock_icon.png?alt=media&token=c6043d21-cdec-4ec4-a10e-01448608ab42";
+                                    String smsMessage = "\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is LOCK " + "\nLocation: " + currentLocation + ", \nDOOR STATUS: LOCK";
+                                    firebaseHistoryDatabaseRecord(lockVector, device_name_db, lockDescri,currentLocation, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
+//                                    sendNotificationSMS(smsMessage);
 
 
                                     unlockBtn.setEnabled(true);
@@ -573,10 +701,16 @@ public class HomeActivity extends AppCompatActivity {
                                     notification(device_name_db + " is unlock");
                                     doorResultLabel.setTextColor(Color.GREEN);
                                     doorResultLabel.setText("Unlock");
-                                    sendNotificationSMS("\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is UNLOCK" + ", \nDOOR STATUS: UNLOCK");
-                                    String unlockDescri = device_name_db + " is UNLOCK at " + GetCurrentDate() + "(" + GetCurrentTime() + ")";
+
+                                    GetCurrentLocation();
+                                    load_data();
+                                    String unlockDescri = device_name_db + " is UNLOCK at " + currentLocation ;
                                     String getDateAndTime = GetCurrentDate() + "(" + GetCurrentTime() + ")";
-                                    firebaseHistoryDatabaseRecord(device_name_db, unlockDescri, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
+                                    String unlockVector = "https://firebasestorage.googleapis.com/v0/b/qrfacelocksystem.appspot.com/o/unlock_icon.png?alt=media&token=4e488d6a-9515-4ee4-85f7-f912f037ce89";
+                                    String smsMessage = "\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is UNLOCK " + "\nLocation: " + currentLocation + ", \nDOOR STATUS: UNLOCK";
+                                    firebaseHistoryDatabaseRecord(unlockVector, device_name_db, unlockDescri, currentLocation, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
+//                                    sendNotificationSMS(smsMessage);
+
 
                                     lockBtn.setEnabled(true);
                                     lockBtn.setBackgroundColor(Color.WHITE);
@@ -643,7 +777,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private String GetCurrentTime(){
-        DateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a");
+        DateFormat timeFormat = new SimpleDateFormat("h:mm:ss a");
         Date newTime = new Date();
 
         return timeFormat.format(newTime);
@@ -678,17 +812,21 @@ public class HomeActivity extends AppCompatActivity {
 
     public class HistoryInfo {
 
+        public String imageResource;
         public String deviceName;
         public String doorId;
         public String lock_Status;
         public String dateAndTime;
         public String description;
+        public String location;
 
         public HistoryInfo() {
             // Default constructor required for calls to DataSnapshot.getValue(User.class)
         }
 
-        public HistoryInfo(String device_name, String description, String door_id, String lockStatus, String dateAndTime) {
+        public HistoryInfo(String imageResource, String device_name, String description,String location, String door_id, String lockStatus, String dateAndTime) {
+            this.imageResource = imageResource;
+            this.location = location;
             this.description = description;
             this.deviceName = device_name;
             this.doorId = door_id;

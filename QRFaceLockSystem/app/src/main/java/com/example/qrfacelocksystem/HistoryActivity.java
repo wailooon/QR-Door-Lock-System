@@ -7,15 +7,18 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -54,9 +59,7 @@ public class HistoryActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         users = mAuth.getCurrentUser();
 
-        setActionBar("Door History");
-
-//        createHistoryList();
+        setActionBar("Door Attempt History");
 
         historyRecyclerView = (RecyclerView) findViewById(R.id.historyView);
         historyRecyclerView.setHasFixedSize(true);
@@ -65,31 +68,6 @@ public class HistoryActivity extends AppCompatActivity {
         historyRecyclerView.setLayoutManager(mLayoutManager);
 
     }
-
-
-//    private void createHistoryList(){
-//
-//        mDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                for(DataSnapshot data: dataSnapshot.getChildren()){
-////                     historyList.add(new HistoryItem((R.drawable.lock_icon), data.child(), "Time", "LOCK"));
-////                     historyList.add(new HistoryItem((R.drawable.unlock_icon), "Device 2", "Time", "UNLOCK"));
-//
-//                }
-//
-//
-//
-//            }
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//
-//    }
 
     private void load_data() {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -148,7 +126,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     public static class HistoryItem{
 
-        public int mImageResource;
+        public String mImageResource;
         public String deviceName;
         public String dateAndTime;
         public String lock_Status;
@@ -158,15 +136,15 @@ public class HistoryActivity extends AppCompatActivity {
 
         }
 
-        public HistoryItem(String deviceName,String description, String dateAndTime, String lock_Status){
+        public HistoryItem(String imageResource, String deviceName,String description, String dateAndTime, String lock_Status){
             this.description = description;
-//            this.mImageResource = imageResource;
+            this.mImageResource = imageResource;
             this.deviceName = deviceName;
             this.dateAndTime = this.dateAndTime;
             this.lock_Status = lock_Status;
         }
 
-        public int getImageResource(){
+        public String getImageResource(){
             return  mImageResource;
         }
 
@@ -190,7 +168,7 @@ public class HistoryActivity extends AppCompatActivity {
             this.description = description;
         }
 
-        public void setImageResource(int mImageResource) {
+        public void setImageResource(String mImageResource) {
             this.mImageResource = mImageResource;
         }
 
@@ -219,11 +197,14 @@ public class HistoryActivity extends AppCompatActivity {
 }
 
 class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
+
+    public static Context context;
+
     public  ArrayList<HistoryActivity.HistoryItem> mHistoryList;
 
     public static class HistoryViewHolder extends RecyclerView.ViewHolder{
 
-//        public ImageView mImageView;
+        public ImageView mImageView;
         public TextView deviceName;
         public TextView time;
         public TextView lock_Status;
@@ -231,7 +212,8 @@ class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHold
 
         public HistoryViewHolder(View itemView) {
             super(itemView);
-//            mImageView = itemView.findViewById(R.id.imageView);
+
+            mImageView = itemView.findViewById(R.id.imageView);
             deviceName = itemView.findViewById(R.id.deviceName_history);
             time = itemView.findViewById(R.id.dateTime_history);
             lock_Status = itemView.findViewById(R.id.lockStatus_history);
@@ -255,7 +237,11 @@ class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHold
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
         HistoryActivity.HistoryItem currentHistory = mHistoryList.get(position);
 
-//        holder.mImageView.setImageResource(currentHistory.getImageResource());
+        context = holder.itemView.getContext();
+
+        //Loading image from Glide library.
+        Glide.with(context).load(currentHistory.getImageResource()).into(holder.mImageView);
+
         holder.deviceName.setText(currentHistory.getDeviceName());
         holder.time.setText(currentHistory.getDateTime());
         holder.lock_Status.setText(currentHistory.getLockStatus());
