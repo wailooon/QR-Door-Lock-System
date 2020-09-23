@@ -165,80 +165,86 @@ public class NewSetupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (validateEmail() | validatePassword()) {
-                    mAuth.fetchSignInMethodsForEmail(emailField.getText().toString())
-                            .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                    if(phoneField.getText().toString().contains("+")) {
+                        mAuth.fetchSignInMethodsForEmail(emailField.getText().toString())
+                                .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
 
-                                    boolean check = !task.getResult().getSignInMethods().isEmpty();
+                                        boolean check = !task.getResult().getSignInMethods().isEmpty();
 
-                                    if (!check) {
-                                        progressBar.setVisibility(View.VISIBLE);
-                                        mAuth.createUserWithEmailAndPassword(emailField.getText().toString(), passwordField.getText().toString()).addOnCompleteListener(NewSetupActivity.this, new OnCompleteListener<AuthResult>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                                if (task.isSuccessful()) {
-                                                    // Sign in success, update UI with the signed-in user's information
-                                                    Log.d(TAG, "createUserWithEmail:success");
+                                        if (!check) {
+                                            progressBar.setVisibility(View.VISIBLE);
+                                            mAuth.createUserWithEmailAndPassword(emailField.getText().toString(), passwordField.getText().toString()).addOnCompleteListener(NewSetupActivity.this, new OnCompleteListener<AuthResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                                    if (task.isSuccessful()) {
+                                                        // Sign in success, update UI with the signed-in user's information
+                                                        Log.d(TAG, "createUserWithEmail:success");
 
-                                                    users = FirebaseAuth.getInstance().getCurrentUser();
-                                                    users.sendEmailVerification().addOnCompleteListener(NewSetupActivity.this, new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            firebaseDatabaseRecord(deviceNameField.getText().toString(), doorLock_Code.getText().toString(), usernameField.getText().toString(), emailField.getText().toString(),phoneField.getText().toString(), passwordField.getText().toString(), lock_Status);
+                                                        users = FirebaseAuth.getInstance().getCurrentUser();
+                                                        users.sendEmailVerification().addOnCompleteListener(NewSetupActivity.this, new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                firebaseDatabaseRecord(deviceNameField.getText().toString(), doorLock_Code.getText().toString(), usernameField.getText().toString(), emailField.getText().toString(), phoneField.getText().toString(), passwordField.getText().toString(), lock_Status);
 
-                                                            confirmation_message = "A confirmation email has been sent to " + emailField.getText().toString().trim() + ". Please check your mailbox and activate your account.";
-                                                            sharedPref = PreferenceManager.getDefaultSharedPreferences(NewSetupActivity.this);
-                                                            editor = sharedPref.edit();
-                                                            editor.putString("ConfirmationMessage", confirmation_message);
+                                                                confirmation_message = "A confirmation email has been sent to " + emailField.getText().toString().trim() + ". Please check your mailbox and activate your account.";
+                                                                sharedPref = PreferenceManager.getDefaultSharedPreferences(NewSetupActivity.this);
+                                                                editor = sharedPref.edit();
+                                                                editor.putString("ConfirmationMessage", confirmation_message);
 
-                                                            editor.putString("username", usernameField.getText().toString());
-                                                            editor.putString("password", passwordField.getText().toString());
-                                                            editor.putString("device_name", deviceNameField.getText().toString());
-                                                            editor.putString("door_code", doorLock_Code.getText().toString());
-                                                            editor.putString("phone_num", phoneField.getText().toString());
-                                                            editor.putString("email", emailField.getText().toString());
-                                                            editor.putBoolean("lock_status", lock_Status);
-                                                            editor.apply();
+                                                                editor.putString("username", usernameField.getText().toString());
+                                                                editor.putString("password", passwordField.getText().toString());
+                                                                editor.putString("device_name", deviceNameField.getText().toString());
+                                                                editor.putString("door_code", doorLock_Code.getText().toString());
+                                                                editor.putString("phone_num", phoneField.getText().toString());
+                                                                editor.putString("email", emailField.getText().toString());
+                                                                editor.putBoolean("lock_status", lock_Status);
+                                                                editor.apply();
 
 
 //                                                             updateUI(user);
-                                                            Intent intent = new Intent(NewSetupActivity.this, ConfimationEmailActivity.class);
-                                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                            usernameField.setText("");
-                                                            emailField.setText("");
-                                                            passwordField.setText("");
-                                                            mAuth.signOut();
-                                                            startActivity(intent);
-                                                            finish();
-                                                        }
-                                                    });
+                                                                Intent intent = new Intent(NewSetupActivity.this, ConfimationEmailActivity.class);
+                                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                                usernameField.setText("");
+                                                                emailField.setText("");
+                                                                passwordField.setText("");
+                                                                mAuth.signOut();
+                                                                startActivity(intent);
+                                                                finish();
+                                                            }
+                                                        });
 
-                                                } else {
-                                                    // If sign in fails, display a message to the user.
-                                                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                                    AlertDialog.Builder failedAlert = new AlertDialog.Builder(NewSetupActivity.this);
-                                                    failedAlert.setTitle("Setup Failed");
-                                                    failedAlert.setMessage("Setup failed, Please try again!");
-                                                    failedAlert.setPositiveButton("Try again",
-                                                            new DialogInterface.OnClickListener() {
-                                                                public void onClick(DialogInterface dialog, int id) {
-                                                                    emailField.setText("");
-                                                                    passwordField.setFocusable(true);
-                                                                }
-                                                            });
-                                                    failedAlert.show();
+                                                    } else {
+                                                        // If sign in fails, display a message to the user.
+                                                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                                        AlertDialog.Builder failedAlert = new AlertDialog.Builder(NewSetupActivity.this);
+                                                        failedAlert.setTitle("Setup Failed");
+                                                        failedAlert.setMessage("Setup failed, Please try again!");
+                                                        failedAlert.setPositiveButton("Try again",
+                                                                new DialogInterface.OnClickListener() {
+                                                                    public void onClick(DialogInterface dialog, int id) {
+                                                                        emailField.setText("");
+                                                                        passwordField.setFocusable(true);
+                                                                    }
+                                                                });
+                                                        failedAlert.show();
 //                                                          updateUI(null);
+                                                    }
+                                                    progressBar.setVisibility(View.GONE);
                                                 }
-                                                progressBar.setVisibility(View.GONE);
-                                            }
-                                        });
+                                            });
 
-                                    } else {
-                                        emailField.setError("Email address already been used!");
+                                        } else {
+                                            emailField.setError("Email address already been used!");
+                                        }
+
                                     }
-                                }
-                            });
+                                });
+                    }else{
+                        phoneField.setError("Phone number must start with country code! (Example: +61)");
+                    }
+
                 }
             }
         });

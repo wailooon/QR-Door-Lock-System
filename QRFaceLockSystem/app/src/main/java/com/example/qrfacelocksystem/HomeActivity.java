@@ -1,6 +1,7 @@
 package com.example.qrfacelocksystem;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,9 +21,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.FaceDetector;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.speech.RecognitionService;
+import android.speech.RecognizerIntent;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.SpannedString;
@@ -34,6 +38,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -106,6 +111,8 @@ public class HomeActivity extends AppCompatActivity {
     public static final String ACCOUNT_SID = "ACfeb3175660e8f538c64caa1e9d82b912";
     public static final String AUTH_TOKEN = "3586e33cc65a5608cdded1018bdbe0ab";
 
+    private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
+    private String voiceText;
 
     private String username_shared, email_shared, uid_shared, door_lock_shared, device_name_shared, phone_shared;
     private Boolean lock_status_shared;
@@ -124,6 +131,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private Button unlockBtn, lockBtn, historyBtn;
     private Button logout;
+    private ImageButton voiceBtn;
 
     private TextView welcomeLabel, doorCodeLabel, doorResultLabel;
 
@@ -151,13 +159,14 @@ public class HomeActivity extends AppCompatActivity {
         lockBtn = (Button) findViewById(R.id.lock_button);
         historyBtn = (Button) findViewById(R.id.history_button);
 
+        voiceBtn = (ImageButton)findViewById(R.id.voice_activated_button);
+
         welcomeLabel = (TextView)findViewById(R.id.welcomeSlogan);
         doorCodeLabel = (TextView)findViewById(R.id.doorID);
         doorResultLabel = (TextView)findViewById(R.id.doorStatusResult);
 
 
 //        retrieveCurrentData_Firebase();
-
         selectedItem();
 
         retrieveAllDoor_Firebase();
@@ -166,6 +175,7 @@ public class HomeActivity extends AppCompatActivity {
         lockBtn_Click();
         unLockBtn_Click();
         historyBtn_Click();
+        voiceBtn_Click();
 
 
 
@@ -658,10 +668,6 @@ public class HomeActivity extends AppCompatActivity {
 
                                     unlockBtn.setEnabled(true);
                                     unlockBtn.setBackgroundColor(Color.WHITE);
-
-//                                    Intent reload = new Intent(HomeActivity.this, HomeActivity.class);
-//                                    reload.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                                    startActivity(reload);
                                 }
                             });
                     lockAlert.setNegativeButton("No",
@@ -717,12 +723,6 @@ public class HomeActivity extends AppCompatActivity {
                                     unlockBtn.setEnabled(false);
                                     unlockBtn.setBackgroundColor(Color.LTGRAY);
 
-
-
-
-                                    //                                Intent reload = new Intent(HomeActivity.this, HomeActivity.class);
-                                    //                                reload.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                    //                                startActivity(reload);
                                 }
                             });
                     unlockAlert.setNegativeButton("No",
@@ -747,17 +747,105 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, HistoryActivity.class);
                 startActivity(intent);
-
             }
         });
 
     }
 
+    private void voiceBtn_Click(){
+        voiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                voice_activated();
+
+//                Intent intent = new Intent(HomeActivity.this, FaceRecognitionActivity.class);
+//                startActivity(intent);
+            }
+        });
+
+    }
+
+    private void voice_activated(){
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Please say lock / unlock the door");
+
+        try{
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+        }
+        catch (Exception e){
+            notification(e.getMessage());
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode){
+            case REQUEST_CODE_SPEECH_INPUT:
+                if(resultCode == RESULT_OK && null != data){
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+                    voiceText = result.get(0);
+
+                    if(voiceText.equals("lock the door")){
+                        if(doorResultLabel.getText().equals("Lock")){
+                            notification("Door is still Lock");
+                        }else{
+                            mDataRef = database.getReference("/Users Details");
+                            mDataRef.child(users.getUid()).child("Devices").child(device_name_db).child("lock_Status").setValue((boolean)false);
+                            notification(device_name_db + " is lock");
+                            doorResultLabel.setTextColor(Color.RED);
+                            doorResultLabel.setText("Lock");
+
+                            GetCurrentLocation();
+                            load_data();
+                            String lockDescri = device_name_db + " is LOCK at " + currentLocation ;
+                            String getDateAndTime = GetCurrentDate() + "(" + GetCurrentTime() + ")";
+                            String lockVector = "https://firebasestorage.googleapis.com/v0/b/qrfacelocksystem.appspot.com/o/lock_icon.png?alt=media&token=c6043d21-cdec-4ec4-a10e-01448608ab42";
+                            String smsMessage = "\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is LOCK " + "\nLocation: " + currentLocation + ", \nDOOR STATUS: LOCK";
+                            firebaseHistoryDatabaseRecord(lockVector, device_name_db, lockDescri,currentLocation, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
+//                                    sendNotificationSMS(smsMessage);
+
+                            unlockBtn.setEnabled(true);
+                            unlockBtn.setBackgroundColor(Color.WHITE);
+                            lockBtn.setEnabled(false);
+                            lockBtn.setBackgroundColor(Color.LTGRAY);
+                        }
+
+                    }else if(voiceText.equals("unlock the door")){
+                        if(doorResultLabel.getText().equals("Unlock")){
+                            notification("Door is still Unlock");
+                        }else{
+                            mDataRef = database.getReference("/Users Details");
+                            mDataRef.child(users.getUid()).child("Devices").child(device_name_db).child("lock_Status").setValue((boolean) true);
+                            notification(device_name_db + " is unlock");
+                            doorResultLabel.setTextColor(Color.GREEN);
+                            doorResultLabel.setText("Unlock");
+
+                            GetCurrentLocation();
+                            load_data();
+                            String unlockDescri = device_name_db + " is UNLOCK at " + currentLocation ;
+                            String getDateAndTime = GetCurrentDate() + "(" + GetCurrentTime() + ")";
+                            String unlockVector = "https://firebasestorage.googleapis.com/v0/b/qrfacelocksystem.appspot.com/o/unlock_icon.png?alt=media&token=4e488d6a-9515-4ee4-85f7-f912f037ce89";
+                            String smsMessage = "\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is UNLOCK " + "\nLocation: " + currentLocation + ", \nDOOR STATUS: UNLOCK";
+                            firebaseHistoryDatabaseRecord(unlockVector, device_name_db, unlockDescri, currentLocation, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
+//                                    sendNotificationSMS(smsMessage);
 
 
-
-
-
+                            lockBtn.setEnabled(true);
+                            lockBtn.setBackgroundColor(Color.WHITE);
+                            unlockBtn.setEnabled(false);
+                            unlockBtn.setBackgroundColor(Color.LTGRAY);
+                        }
+                    }
+                }
+                break;
+        }
+    }
 
     @Override
     protected void onResume() {

@@ -11,6 +11,27 @@
     <string name="login_failed">"Login failed"</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
+    <!-- Account Preferences -->
+    <string name="account_setting_header">Account Settings</string>
+    <!--        Username Preferences-->
+    <string name="user_name">Username</string>
+    <string name="user_name_value">Username</string>
+    <!--        Email Preferences-->
+    <string name="email">Email Address</string>
+    <string name="email_value">Email Address</string>
+    <!--        Password Preferences-->
+    <string name="password">Password</string>
+    <string name="password_value">Change password</string>
+    <!--        Phone Number Preferences-->
+    <string name="phone">Phone Number</string>
+    <string name="phone_value">Change Phone</string>
+    <!--        Uid Preferences-->
+    <string name="uid">User UID</string>
+    <string name="uid_value">UID</string>
+
+    <string name="sign_out_btn_label">Sign out</string>
+
+
     <!-- Add New Device Preferences -->
     <string name="add_new_header">New Device</string>
     <string name="add_new_btn_label">Add New Device</string>
@@ -19,11 +40,6 @@
     <string name="history_header">Door History</string>
     <string name="history_btn_label">Lock / Unlock History</string>
 
-
-    <!-- Account Preferences -->
-    <string name="account_setting_header">Account Settings</string>
-    <string name="user_name">User Name</string>
-    <string name="sign_out_btn_label">Sign out</string>
 
     <!-- Preference Titles -->
 

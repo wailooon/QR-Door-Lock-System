@@ -8,39 +8,59 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/history_header">
-        <Preference
-            android:key="history_btn"
-            android:title="@string/history_btn_label" />
-
-    </PreferenceCategory>
-
-
     <PreferenceCategory app:title="@string/account_setting_header">
+        <EditTextPreference
+            app:key="user_name_editText"
+            app:title="@string/user_name"
+            android:summary="@string/user_name_value"/>
 
-        <!--        <EditTextPreference-->
-        <!--            app:key="signature"-->
-        <!--            app:title="@string/signature_title"-->
-        <!--            app:useSimpleSummaryProvider="true" />-->
+        <Preference
+            app:key="email_editText"
+            app:title="@string/email"
+            android:summary="@string/email_value"/>
 
         <EditTextPreference
-            app:key="user_name"
-            app:title="@string/user_name"
-            app:useSimpleSummaryProvider="true" />
+            app:key="password_editText"
+            app:title="@string/password"
+            android:summary="@string/password_value"/>
 
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="phone_editText"
+            app:title="@string/phone"
+            android:summary="@string/phone_value"/>
+
+        <Preference
+            app:key="uid_editText"
+            app:title="@string/uid"
+            android:summary="@string/uid_value"/>
 
         <Preference
             android:key="sign_out_btn"
             android:title="@string/sign_out_btn_label" />
 
     </PreferenceCategory>
+
+
+<!--    <PreferenceCategory app:title="@string/history_header">-->
+<!--        <Preference-->
+<!--            android:key="history_btn"-->
+<!--            android:title="@string/history_btn_label" />-->
+
+<!--    </PreferenceCategory>-->
+
+
+<!--    <PreferenceCategory app:title="@string/account_setting_header">-->
+<!--        <ListPreference-->
+<!--            app:defaultValue="reply"-->
+<!--            app:entries="@array/reply_entries"-->
+<!--            app:entryValues="@array/reply_values"-->
+<!--            app:key="reply"-->
+<!--            app:title="@string/reply_title"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+
+
+
+<!--    </PreferenceCategory>-->
 
 
 

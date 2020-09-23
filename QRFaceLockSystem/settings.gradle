@@ -1,2 +1,6 @@
+include ':sdk'
 include ':app'
 rootProject.name = "QRFaceLockSystem"
+include ':java'
+include ':java'
+include ':java'
