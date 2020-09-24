@@ -1,13 +1,17 @@
 package com.example.qrfacelocksystem;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +33,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -62,6 +68,8 @@ public class SettingsActivity extends AppCompatActivity {
         private FirebaseDatabase database;
         private DatabaseReference mDataRef;
 
+        private List<String> deviceDataList = new ArrayList<>();
+
         SharedPreferences sharedPref;
         SharedPreferences.Editor editor;
 
@@ -88,6 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
             addNewDevice();
+            deleteDevice();
 
             updateUsername();
             showEmail();
@@ -126,6 +135,115 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
         }
+
+        private void deleteDevice() {
+            Preference deleteBtn = (Preference) findPreference("delete_btn");
+
+            mDataRef = database.getReference("Users Details/" + users.getUid() + "/Devices");
+
+            mDataRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    deviceDataList.clear();
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        deviceDataList.add(item.child("deviceName").getValue().toString());
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            deleteBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                public boolean onPreferenceClick(Preference preference) {
+                    if(deviceDataList.size() <= 1) {
+                        notification("You can't remove last device");
+                    }else{
+                        final AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getContext());
+                        deleteDialog.setTitle("Choose a device you want to delete");
+                        deleteDialog.setSingleChoiceItems(deviceDataList.toArray(new String[deviceDataList.size()]), -1, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mDataRef = database.getReference("Users Details/" + users.getUid() + "/Devices/");
+
+                                mDataRef.orderByChild("deviceName").equalTo(String.valueOf(deviceDataList.get(i))).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot item : snapshot.getChildren()) {
+                                            item.getRef().removeValue();
+
+                                            mDataRef = database.getReference("Users Details/" + users.getUid() + "/Attempt History/" + item.child("deviceName").getValue().toString());
+
+                                            mDataRef.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    snapshot.getRef().removeValue();
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+
+                                            mDataRef = database.getReference("IsUsedQRCode/" + item.child("doorId").getValue().toString() );
+
+                                            mDataRef.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    snapshot.getRef().removeValue();
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+
+
+                                notification(String.valueOf(deviceDataList.get(i)) + " is successful delete!");
+                                deviceDataList.clear();
+                                dialogInterface.dismiss();
+                            }
+                        });
+
+                        deleteDialog.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+
+                        AlertDialog dialog = deleteDialog.create();
+                        dialog.show();
+                    }
+
+                    return true;
+                }
+            });
+        }
+
+        private void getDeviceData(String deviceName) {
+
+
+        }
+
 
         private void updateUsername() {
             EditTextPreference user_name = (EditTextPreference) findPreference("user_name_editText");

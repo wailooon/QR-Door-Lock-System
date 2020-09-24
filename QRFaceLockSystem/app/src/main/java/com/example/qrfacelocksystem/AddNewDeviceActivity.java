@@ -132,10 +132,10 @@ public class AddNewDeviceActivity extends AppCompatActivity {
     private void firebaseDatabaseRecord(String device_name, String door_id, Boolean lock_status) {
         DeviceDetails newDevice = new DeviceDetails(device_name, door_id,lock_status);
 
-        mDataRef = database.getReference("/Users Details/");
+        mDataRef = database.getReference("Users Details/");
         mDataRef.child(users.getUid()).child("Devices").child(device_name).setValue(newDevice);
 
-        mDataRef = database.getReference("/IsUsedQRCode/");
+        mDataRef = database.getReference("IsUsedQRCode/");
         mDataRef.child(door_id).child("doorId").setValue(door_id);
     }
 

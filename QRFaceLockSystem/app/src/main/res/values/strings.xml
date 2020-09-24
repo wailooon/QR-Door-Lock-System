@@ -11,6 +11,11 @@
     <string name="login_failed">"Login failed"</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
+    <!-- Device Preferences -->
+    <string name="add_new_header">Device Settings</string>
+    <string name="add_new_btn_label">Add New Device</string>
+    <string name="delete_btn_label">Delete Device</string>
+
     <!-- Account Preferences -->
     <string name="account_setting_header">Account Settings</string>
     <!--        Username Preferences-->
@@ -32,9 +37,7 @@
     <string name="sign_out_btn_label">Sign out</string>
 
 
-    <!-- Add New Device Preferences -->
-    <string name="add_new_header">New Device</string>
-    <string name="add_new_btn_label">Add New Device</string>
+
 
     <!-- History Preferences -->
     <string name="history_header">Door History</string>

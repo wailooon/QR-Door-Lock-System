@@ -165,8 +165,9 @@ public class HomeActivity extends AppCompatActivity {
         doorCodeLabel = (TextView)findViewById(R.id.doorID);
         doorResultLabel = (TextView)findViewById(R.id.doorStatusResult);
 
+        load_data();
+        retrieveUser_Firebase();
 
-//        retrieveCurrentData_Firebase();
         selectedItem();
 
         retrieveAllDoor_Firebase();
@@ -176,8 +177,6 @@ public class HomeActivity extends AppCompatActivity {
         unLockBtn_Click();
         historyBtn_Click();
         voiceBtn_Click();
-
-
 
 
 
@@ -219,12 +218,18 @@ public class HomeActivity extends AppCompatActivity {
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             if (!users.isEmailVerified()) {
-                                mAuth.signOut();
-                                clearAllPre();
-                                Intent intent = new Intent(HomeActivity.this, SignInActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
+                                users.sendEmailVerification().addOnCompleteListener(HomeActivity.this, new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        notification("Successful resend the verify email! ");
+                                        mAuth.signOut();
+                                        clearAllPre();
+                                        Intent intent = new Intent(HomeActivity.this, SignInActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
                             }
                         }
                     });
@@ -251,9 +256,6 @@ public class HomeActivity extends AppCompatActivity {
                 if(adapterView.getItemAtPosition(position).equals(item)){
                     chooseCurrentData_Firebase(item);
                 }
-
-
-
 
 
             }

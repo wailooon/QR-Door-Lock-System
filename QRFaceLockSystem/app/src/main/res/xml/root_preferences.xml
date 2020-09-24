@@ -6,6 +6,11 @@
             android:key="add_new_btn"
             android:title="@string/add_new_btn_label" />
 
+        <Preference
+            android:key="delete_btn"
+            android:title="@string/delete_btn_label" />
+
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/account_setting_header">
