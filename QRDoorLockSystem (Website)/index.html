@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Home</title>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/home.css">
+
+
+    <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-analytics.js"></script>
+
+</head>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#9c9076;">
+        <a class="navbar-brand" href="index.html" style="color: black !important; font-weight: 700;">QR Door Lock
+            System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#modalAccountForm">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a id="btn-logout" class="nav-link" href="">Signout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<body>
+    <div id="welcomeLabel">
+
+    </div>
+    <div class="container">
+        <h1 style="margin-left: 15px; font-style: italic; color: rgb(78, 62, 35);">Check Attempt
+            History</h1>
+        <div id="device" class="input-group">
+            <select id="device-List" class="custom-select">
+            </select>
+            <div class="input-group-append">
+                <button id="chooseDevice" class="btn btn-outline-secondary" type="button">Check History</button>
+            </div>
+        </div>
+
+        <div id="device_history">
+
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalAccountForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Account Settings</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div id="account" class="modal-body mx-3">
+
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button id="updateSetting" class="btn btn-default">Update Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+<script src="js/home.js"></script>
+<script>
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (!user) {
+            window.location.href = "login.html";
+        }
+    });
+</script>
+
+
+
+</html>

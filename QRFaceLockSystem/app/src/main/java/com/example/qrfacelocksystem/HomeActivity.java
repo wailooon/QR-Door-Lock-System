@@ -39,6 +39,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -133,6 +134,8 @@ public class HomeActivity extends AppCompatActivity {
     private Button logout;
     private ImageButton voiceBtn;
 
+    private ImageView image_DoorStatus;
+
     private TextView welcomeLabel, doorCodeLabel, doorResultLabel;
 
     @Override
@@ -160,6 +163,8 @@ public class HomeActivity extends AppCompatActivity {
         historyBtn = (Button) findViewById(R.id.history_button);
 
         voiceBtn = (ImageButton)findViewById(R.id.voice_activated_button);
+
+        image_DoorStatus = (ImageView)findViewById(R.id.image_DoorStatus);
 
         welcomeLabel = (TextView)findViewById(R.id.welcomeSlogan);
         doorCodeLabel = (TextView)findViewById(R.id.doorID);
@@ -606,6 +611,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if(lock_status_db){
+                    image_DoorStatus.setImageResource(R.drawable.unlock_status);
                     doorResultLabel.setTextColor(Color.GREEN);
                     doorResultLabel.setText("Unlock");
                     unlockBtn.setEnabled(false);
@@ -613,6 +619,7 @@ public class HomeActivity extends AppCompatActivity {
                     lockBtn.setEnabled(true);
                     lockBtn.setBackgroundColor(Color.WHITE);
                 }else{
+                    image_DoorStatus.setImageResource(R.drawable.lock_status);
                     doorResultLabel.setTextColor(Color.RED);
                     doorResultLabel.setText("Lock");
                     lockBtn.setEnabled(false);
@@ -657,6 +664,7 @@ public class HomeActivity extends AppCompatActivity {
                                     notification(device_name_db + " is lock");
                                     doorResultLabel.setTextColor(Color.RED);
                                     doorResultLabel.setText("Lock");
+                                    image_DoorStatus.setImageResource(R.drawable.lock_status);
 
                                     GetCurrentLocation();
                                     load_data();
@@ -709,6 +717,8 @@ public class HomeActivity extends AppCompatActivity {
                                     notification(device_name_db + " is unlock");
                                     doorResultLabel.setTextColor(Color.GREEN);
                                     doorResultLabel.setText("Unlock");
+                                    image_DoorStatus.setImageResource(R.drawable.unlock_status);
+
 
                                     GetCurrentLocation();
                                     load_data();
@@ -802,6 +812,7 @@ public class HomeActivity extends AppCompatActivity {
                             notification(device_name_db + " is lock");
                             doorResultLabel.setTextColor(Color.RED);
                             doorResultLabel.setText("Lock");
+                            image_DoorStatus.setImageResource(R.drawable.lock_status);
 
                             GetCurrentLocation();
                             load_data();
@@ -827,6 +838,7 @@ public class HomeActivity extends AppCompatActivity {
                             notification(device_name_db + " is unlock");
                             doorResultLabel.setTextColor(Color.GREEN);
                             doorResultLabel.setText("Unlock");
+                            image_DoorStatus.setImageResource(R.drawable.unlock_status);
 
                             GetCurrentLocation();
                             load_data();

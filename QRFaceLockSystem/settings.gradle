@@ -4,3 +4,5 @@ rootProject.name = "QRFaceLockSystem"
 include ':java'
 include ':java'
 include ':java'
+include ':openCVLibrary3411'
+include ':openCVLibrary3411'

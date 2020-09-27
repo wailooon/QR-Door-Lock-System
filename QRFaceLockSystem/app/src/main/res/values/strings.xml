@@ -13,8 +13,8 @@
 
     <!-- Device Preferences -->
     <string name="add_new_header">Device Settings</string>
-    <string name="add_new_btn_label">Add New Device</string>
-    <string name="delete_btn_label">Delete Device</string>
+    <string name="add_new_btn_label">Add New Device (eg: Door)</string>
+    <string name="delete_btn_label">Delete Device (eg: Door)</string>
 
     <!-- Account Preferences -->
     <string name="account_setting_header">Account Settings</string>
@@ -35,8 +35,6 @@
     <string name="uid_value">UID</string>
 
     <string name="sign_out_btn_label">Sign out</string>
-
-
 
 
     <!-- History Preferences -->

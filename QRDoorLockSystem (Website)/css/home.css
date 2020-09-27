@@ -1,0 +1,56 @@
+/* navbar css */
+@import url(http://fonts.googleapis.com/css?family=Raleway);
+
+a {
+    color: #000000 !important;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+a:hover {
+    color: rgb(255, 193, 50) !important;
+}
+
+/* Style the buttons */
+.btn {
+    margin-right: 25px;
+    border: none;
+    outline: none;
+    background-color: #8b846c;
+    cursor: pointer;
+    color: #000000;
+    font-weight: 500;
+}
+
+.btn:hover {
+    background-color: rgb(233, 219, 170);
+    color: #000000;
+}
+
+.btn.active {
+    background-color: #666;
+    color: white;
+}
+
+#device {
+    margin: 15px;
+}
+
+#deviceHeader {
+    color: rgb(177, 142, 46);
+}
+
+#lockStatus {
+    font-weight: 900;
+    color: rgb(156, 136, 104);
+}
+
+.card {
+    padding-left: 15px;
+
+}
+
+.card-body {
+    margin: 5px;
+
+}

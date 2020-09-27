@@ -2,11 +2,12 @@
 //
 //import androidx.appcompat.app.AppCompatActivity;
 //
-//import android.content.pm.PackageManager;
+//
 //import android.os.Bundle;
 //
 //import org.opencv.android.BaseLoaderCallback;
 //import org.opencv.android.CameraBridgeViewBase;
+//import org.opencv.android.JavaCamera2View;
 //import org.opencv.android.JavaCameraView;
 //import org.opencv.android.LoaderCallbackInterface;
 //import org.opencv.android.OpenCVLoader;
@@ -19,13 +20,12 @@
 //import org.opencv.objdetect.CascadeClassifier;
 //
 //import java.io.File;
-//import java.io.FileInputStream;
 //import java.io.FileNotFoundException;
 //import java.io.FileOutputStream;
 //import java.io.IOException;
 //import java.io.InputStream;
 //
-//public class FaceRecognitionActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+//public class FaceRecognitionActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2{
 //
 //    JavaCameraView javaCameraView;
 //    File cascFile;
@@ -40,16 +40,15 @@
 //
 //        OpenCVLoader.initDebug();
 //
-//        javaCameraView = (JavaCameraView)findViewById(R.id.java_camera_view);
+//        javaCameraView = (JavaCameraView)findViewById(R.id.javaCameraView);
 //
 //        if(!OpenCVLoader.initDebug()){
 //            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION,this, baseCallback);
 //
 //        }else{
-//            try{
+//            try {
 //                baseCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-//
-//            }catch (Exception e){
+//            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
 //        }
@@ -91,7 +90,7 @@
 //    private BaseLoaderCallback baseCallback = new BaseLoaderCallback(this) {
 //
 //        @Override
-//        public void onManagerConnected(int status) throws IOException{
+//        public void onManagerConnected(int status) throws IOException {
 //            switch (status)
 //            {
 //                case LoaderCallbackInterface.SUCCESS:
@@ -137,4 +136,6 @@
 //            }
 //        }
 //    };
+//
+//
 //}
