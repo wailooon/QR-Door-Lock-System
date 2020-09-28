@@ -9,15 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FaceRecognitionActivity"></activity>
-        <!-- <activity android:name=".FaceRecognitionActivity" -->
-        <!-- android:screenOrientation="portrait"></activity> -->
         <activity
             android:name=".HistoryActivity"
             android:parentActivityName=".SettingsActivity" />
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/AppThemeNoActionBar" />
+            android:theme="@style/AppThemeNoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ConfimationEmailActivity" />
         <activity
             android:name=".SettingsActivity"
@@ -29,11 +32,6 @@
             android:name=".ForgotPasswordActivity"
             android:parentActivityName=".SignInActivity" />
         <activity android:name=".SignInActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".NewSetupActivity"

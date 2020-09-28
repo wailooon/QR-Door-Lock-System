@@ -110,7 +110,8 @@ public class HomeActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     public static final String ACCOUNT_SID = "ACfeb3175660e8f538c64caa1e9d82b912";
-    public static final String AUTH_TOKEN = "3586e33cc65a5608cdded1018bdbe0ab";
+    public static final String AUTH_TOKEN = "b11d0f1c732e898fceace61770364bab";
+    public static final String twillioPhone = "+17605469479";
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     private String voiceText;
@@ -182,21 +183,6 @@ public class HomeActivity extends AppCompatActivity {
         unLockBtn_Click();
         historyBtn_Click();
         voiceBtn_Click();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         setActionBar("Home");
@@ -273,26 +259,6 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-
-//    private void retrieveCurrentData_Firebase() {
-//        load_data_from_setup();
-//        mDataRef = database.getReference("/Users Details/"+ users.getUid());
-//
-//        mDataRef.orderByChild("uid").equalTo(users.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for(DataSnapshot data: dataSnapshot.getChildren()){
-//                    setDBSharedPref(data.child("username").getValue().toString(), data.child("email").getValue().toString(), data.child("uid").getValue().toString(), (Boolean) data.child("lock_Status").getValue(), data.child("doorId").getValue().toString());
-//                    load_data();
-//                    update_UI();
-//                }
-//            }
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//            }
-//        });
-//    }
-
     private class SelectedPositionItem {
 
         private int spinnerValue;
@@ -322,7 +288,7 @@ public class HomeActivity extends AppCompatActivity {
         retrieveUser_Firebase();
 
         String body = messageContent;
-        String from = "+17605469479";
+        String from = twillioPhone;
         String to = phone_db;
 
         String base64EncodedCredentials = "Basic " + Base64.encodeToString(
@@ -354,43 +320,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-
-
-//        HttpClient httpclient = new DefaultHttpClient();
-//
-//        HttpPost httppost = new HttpPost(
-//                "https://api.twilio.com/2010-04-01/Accounts/"+ACCOUNT_SID+"/SMS/Messages");
-//        String base64EncodedCredentials = "Basic "
-//                + Base64.encodeToString(
-//                (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
-//                Base64.NO_WRAP);
-//
-//        httppost.setHeader("Authorization",
-//                base64EncodedCredentials);
-//        try {
-//            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-//            nameValuePairs.add(new BasicNameValuePair("From",
-//                    "+17605469479"));
-//            nameValuePairs.add(new BasicNameValuePair("To",
-//                    phone_db));
-//            nameValuePairs.add(new BasicNameValuePair("Body",
-//                    messageContent));
-//
-//            httppost.setEntity(new UrlEncodedFormEntity(
-//                    nameValuePairs));
-//
-//            // Execute HTTP Post Request
-//            HttpResponse response = httpclient.execute(httppost);
-//            HttpEntity entity = response.getEntity();
-//            System.out.println("Entity post is: "
-//                    + EntityUtils.toString(entity));
-//
-//
-//        } catch (ClientProtocolException e) {
-//
-//        } catch (IOException e) {
-//
-//        }
     }
 
     interface TwilioApi {
@@ -673,7 +602,7 @@ public class HomeActivity extends AppCompatActivity {
                                     String lockVector = "https://firebasestorage.googleapis.com/v0/b/qrfacelocksystem.appspot.com/o/lock_icon.png?alt=media&token=c6043d21-cdec-4ec4-a10e-01448608ab42";
                                     String smsMessage = "\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is LOCK " + "\nLocation: " + currentLocation + ", \nDOOR STATUS: LOCK";
                                     firebaseHistoryDatabaseRecord(lockVector, device_name_db, lockDescri,currentLocation, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
-//                                    sendNotificationSMS(smsMessage);
+                                    sendNotificationSMS(smsMessage);
 
 
                                     unlockBtn.setEnabled(true);
@@ -727,7 +656,7 @@ public class HomeActivity extends AppCompatActivity {
                                     String unlockVector = "https://firebasestorage.googleapis.com/v0/b/qrfacelocksystem.appspot.com/o/unlock_icon.png?alt=media&token=4e488d6a-9515-4ee4-85f7-f912f037ce89";
                                     String smsMessage = "\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is UNLOCK " + "\nLocation: " + currentLocation + ", \nDOOR STATUS: UNLOCK";
                                     firebaseHistoryDatabaseRecord(unlockVector, device_name_db, unlockDescri, currentLocation, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
-//                                    sendNotificationSMS(smsMessage);
+                                    sendNotificationSMS(smsMessage);
 
 
                                     lockBtn.setEnabled(true);
@@ -770,8 +699,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 voice_activated();
 
-//                Intent intent = new Intent(HomeActivity.this, FaceRecognitionActivity.class);
-//                startActivity(intent);
             }
         });
 
@@ -821,7 +748,7 @@ public class HomeActivity extends AppCompatActivity {
                             String lockVector = "https://firebasestorage.googleapis.com/v0/b/qrfacelocksystem.appspot.com/o/lock_icon.png?alt=media&token=c6043d21-cdec-4ec4-a10e-01448608ab42";
                             String smsMessage = "\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is LOCK " + "\nLocation: " + currentLocation + ", \nDOOR STATUS: LOCK";
                             firebaseHistoryDatabaseRecord(lockVector, device_name_db, lockDescri,currentLocation, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
-//                                    sendNotificationSMS(smsMessage);
+                            sendNotificationSMS(smsMessage);
 
                             unlockBtn.setEnabled(true);
                             unlockBtn.setBackgroundColor(Color.WHITE);
@@ -847,7 +774,7 @@ public class HomeActivity extends AppCompatActivity {
                             String unlockVector = "https://firebasestorage.googleapis.com/v0/b/qrfacelocksystem.appspot.com/o/unlock_icon.png?alt=media&token=4e488d6a-9515-4ee4-85f7-f912f037ce89";
                             String smsMessage = "\nHi, " + username_db + ", \nYour door " + device_name_db + "(" + door_lock_db + ")" + " in " + GetCurrentDate() + " (" + GetCurrentTime() +") is UNLOCK " + "\nLocation: " + currentLocation + ", \nDOOR STATUS: UNLOCK";
                             firebaseHistoryDatabaseRecord(unlockVector, device_name_db, unlockDescri, currentLocation, door_lock_db, doorResultLabel.getText().toString(),getDateAndTime.toString());
-//                                    sendNotificationSMS(smsMessage);
+                            sendNotificationSMS(smsMessage);
 
 
                             lockBtn.setEnabled(true);
