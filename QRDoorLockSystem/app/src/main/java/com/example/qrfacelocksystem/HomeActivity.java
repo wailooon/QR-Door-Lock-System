@@ -110,7 +110,7 @@ public class HomeActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     public static final String ACCOUNT_SID = "ACfeb3175660e8f538c64caa1e9d82b912";
-    public static final String AUTH_TOKEN = "b11d0f1c732e898fceace61770364bab";
+    public static final String AUTH_TOKEN = "";
     public static final String twillioPhone = "+17605469479";
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;

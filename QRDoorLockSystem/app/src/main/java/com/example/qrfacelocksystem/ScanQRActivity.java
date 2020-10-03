@@ -227,56 +227,6 @@ public class ScanQRActivity extends AppCompatActivity {
 
                         }
 
-//                        mDataRef = FirebaseDatabase.getInstance().getReference("Users Details");
-//
-//                        mDataRef.orderByChild("doorId").equalTo(item.getRawValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                if(users == null){
-//                                    if(dataSnapshot.exists()){
-//                                        notification("Please try other QR code, because this QR code has been used!");
-//                                        Intent intent = new Intent(ScanQRActivity.this, SignInActivity.class);
-//                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                                        startActivity(intent);
-//                                        finish();
-//                                    }else{
-//                                        createDoor(item.getRawValue().toString());
-//                                    }
-//
-//                                }else {
-//                                    mDataRef = FirebaseDatabase.getInstance().getReference("/Users Details/" + users.getUid());
-//
-//                                    mDataRef.orderByChild("doorId").equalTo(item.getRawValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-//                                        @Override
-//                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                            if (dataSnapshot.exists()) {
-//                                                notification("Please try other QR code, because this QR code has been used!");
-//                                                Intent intent = new Intent(ScanQRActivity.this, HomeActivity.class);
-//                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                                startActivity(intent);
-//                                            } else {
-//                                                Intent intent = new Intent(ScanQRActivity.this, AddNewDeviceActivity.class);
-//                                                intent.putExtra("NewDoorCode", item.getRawValue().toString());
-//                                                startActivity(intent);
-//                                            }
-//                                        }
-//
-//                                        @Override
-//                                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                                        }
-//                                    });
-//
-//                                }
-//
-//                            }
-//
-//                            @Override
-//                            public void onCancelled(@NonNull DatabaseError error) {
-//
-//                            }
-//                        });
-
                     }
                     break;
                     default:

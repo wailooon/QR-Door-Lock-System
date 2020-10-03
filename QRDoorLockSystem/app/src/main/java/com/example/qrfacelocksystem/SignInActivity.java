@@ -91,43 +91,13 @@ public class SignInActivity extends AppCompatActivity {
 
         setActionBar("Sign In");
 
-
         checkIsLogin();
-
-
 
         signInBtn_Click();
         showPasswordCheckbox();
         newDevice_Click();
         forgotPw_Click();
 
-
-
-//        if(!isTaskRoot()){
-//            finish();
-//            return;
-//        }
-
-//        if((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0){
-//            finish();
-//            return;
-//        }
-
-//        if (getIntent().getBooleanExtra("EXIT", false)) {
-//            finish();
-//            return;
-//        }
-
-//        if (!this.isTaskRoot()) {
-//            Intent intent = getIntent();
-//            if (intent != null) {
-//                String action = intent.getAction();
-//                if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(action)) {
-//                    finish();
-//                    return;
-//                }
-//            }
-//        }
 
     }
 
@@ -202,7 +172,7 @@ public class SignInActivity extends AppCompatActivity {
                             failedAlert.setPositiveButton("Create a new account?",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-                                            Intent intent = new Intent(SignInActivity.this, NewSetupActivity.class);
+                                            Intent intent = new Intent(SignInActivity.this, ScanQRActivity.class);
                                             startActivity(intent);
                                             emailField.setText(null);
                                             passwordField.setText(null);
@@ -226,15 +196,6 @@ public class SignInActivity extends AppCompatActivity {
             }
         }
     }
-
-//    private boolean checkEmailVerified() {
-//        if (mAuth.getCurrentUser() != null) {
-//            if (users.isEmailVerified()) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
 
     private void newDevice_Click() {
